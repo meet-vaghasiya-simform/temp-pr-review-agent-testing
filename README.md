@@ -1,4 +1,38 @@
-# Nuxt 3 Minimal Starter
+# PR Reviewer - Nuxt 3 Project
+
+A Nuxt 3 application with **built-in AI-powered code review systems** using GitHub Copilot.
+
+## 🤖 AI Code Review Systems
+
+This project includes two complementary code review systems:
+
+1. **Custom Copilot Agent** (`.github/agents/pr-reviewer.agent.md`)
+   - Manual code reviews in VS Code or GitHub.com
+   - Interactive conversations about code quality
+   - Expert in Nuxt.js, Vue.js, TypeScript, and security
+
+2. **Agentic Workflow** (`.github/workflows/code-review-agent.md`)
+   - Automatic reviews triggered on push/PR events
+   - Posts review comments with security, performance, and quality findings
+   - Adds labels and creates issues for critical problems
+
+### 📖 Getting Started with AI Reviews
+
+See **[SETUP-GUIDE.md](./SETUP-GUIDE.md)** for complete instructions on:
+- Setting up and using the Custom Copilot Agent
+- Deploying the Agentic Workflow
+- Prerequisites and troubleshooting
+
+### Quick Start (Custom Agent)
+
+1. Open VS Code in this repository
+2. Open Copilot Chat (`Ctrl+Shift+I`)
+3. Select "PR Reviewer" from the agent dropdown
+4. Ask: "Review my recent changes"
+
+---
+
+## 🚀 Nuxt 3 Development
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
