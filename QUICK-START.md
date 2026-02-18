@@ -3,9 +3,11 @@
 ## 🎯 What Was Created
 
 1. ✅ **Custom Copilot Agent**: [.github/agents/pr-reviewer.agent.md](.github/agents/pr-reviewer.agent.md)
-2. ✅ **Agentic Workflow**: [.github/workflows/code-review-agent.md](.github/workflows/code-review-agent.md)
-3. ✅ **Setup Guide**: [SETUP-GUIDE.md](./SETUP-GUIDE.md)
-4. ✅ **Updated README**: [README.md](./README.md)
+2. ✅ **Automated PR Review Workflow**: [.github/workflows/code-review-agent.md](.github/workflows/code-review-agent.md)
+3. ✅ **Daily Repo Status**: [.github/workflows/daily-repo-status.md](.github/workflows/daily-repo-status.md)
+4. ✅ **Daily Documentation Updater**: [.github/workflows/daily-doc-updater.md](.github/workflows/daily-doc-updater.md)
+5. ✅ **Setup Guide**: [SETUP-GUIDE.md](./SETUP-GUIDE.md)
+6. ✅ **Updated README**: [README.md](./README.md)
 
 ---
 
@@ -110,7 +112,9 @@ git push
 
 - **[SETUP-GUIDE.md](./SETUP-GUIDE.md)** - Complete setup instructions, troubleshooting, and usage guide
 - **[.github/agents/pr-reviewer.agent.md](.github/agents/pr-reviewer.agent.md)** - Custom agent configuration
-- **[.github/workflows/code-review-agent.md](.github/workflows/code-review-agent.md)** - Workflow source code
+- **[.github/workflows/code-review-agent.md](.github/workflows/code-review-agent.md)** - PR review workflow source
+- **[.github/workflows/daily-repo-status.md](.github/workflows/daily-repo-status.md)** - Daily status report workflow
+- **[.github/workflows/daily-doc-updater.md](.github/workflows/daily-doc-updater.md)** - Documentation updater workflow
 
 ### External Resources
 
