@@ -24,7 +24,6 @@ safe-outputs:
     title-prefix: "[daily-report] "
     labels: [report, daily-activity]
 
-source: githubnext/agentics/workflows/daily-activity-report.md@v1.0.0
 engine: copilot
 ---
 
