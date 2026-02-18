@@ -2,9 +2,11 @@
 
 A Nuxt 3 application with **built-in AI-powered code review systems** using GitHub Copilot.
 
-## 🤖 AI Code Review Systems
+## 🤖 AI-Powered Automation Systems
 
-This project includes two complementary code review systems:
+This project includes multiple AI-powered systems to improve code quality and project management:
+
+### Code Review Systems
 
 1. **Custom Copilot Agent** (`.github/agents/pr-reviewer.agent.md`)
    - Manual code reviews in VS Code or GitHub.com
@@ -16,11 +18,26 @@ This project includes two complementary code review systems:
    - Posts review comments with security, performance, and quality findings
    - Adds labels and creates issues for critical problems
 
-### 📖 Getting Started with AI Reviews
+### Automated Documentation & Reporting
+
+3. **Daily Documentation Updater** (`.github/workflows/daily-doc-updater.md`)
+   - Automatically scans merged PRs and commits from the last 24 hours
+   - Identifies features that need documentation
+   - Updates documentation files and creates PRs with changes
+   - Runs daily via scheduled workflow
+
+4. **Daily Repository Status** (`.github/workflows/daily-repo-status.md`)
+   - Generates daily status reports as GitHub issues
+   - Tracks recent activity (issues, PRs, discussions, releases)
+   - Provides productivity insights and project recommendations
+   - Runs daily to keep team informed
+
+### 📖 Getting Started
 
 See **[SETUP-GUIDE.md](./SETUP-GUIDE.md)** for complete instructions on:
 - Setting up and using the Custom Copilot Agent
-- Deploying the Agentic Workflow
+- Deploying the Code Review Workflow
+- Understanding the automated documentation and reporting workflows
 - Prerequisites and troubleshooting
 
 ### Quick Start (Custom Agent)

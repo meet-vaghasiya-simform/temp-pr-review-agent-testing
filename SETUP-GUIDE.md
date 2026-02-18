@@ -1,9 +1,11 @@
 # PR Reviewer Setup Guide
 
-This repository now includes **two complementary code review systems** that work together to improve code quality:
+This repository includes **four AI-powered automation systems** that work together to improve code quality and project management:
 
 1. **Custom Copilot Agent** - Manual reviews in VS Code/GitHub.com
-2. **Agentic Workflow** - Automatic reviews triggered on push/PR events
+2. **Code Review Workflow** - Automatic reviews triggered on push/PR events
+3. **Daily Documentation Updater** - Auto-updates documentation based on merged changes
+4. **Daily Repository Status** - Generates daily status reports as GitHub issues
 
 ---
 
@@ -11,6 +13,8 @@ This repository now includes **two complementary code review systems** that work
 
 - [System 1: Custom Copilot Agent (Manual Reviews)](#system-1-custom-copilot-agent-manual-reviews)
 - [System 2: Agentic Workflow (Automatic Reviews)](#system-2-agentic-workflow-automatic-reviews)
+- [System 3: Daily Documentation Updater](#system-3-daily-documentation-updater)
+- [System 4: Daily Repository Status](#system-4-daily-repository-status)
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
 - [Comparison](#comparison)
@@ -199,6 +203,108 @@ git push
 - ✅ Consistent review quality
 - ✅ No human intervention needed
 - ✅ Works 24/7
+
+---
+
+## System 3: Daily Documentation Updater
+
+### What is it?
+
+An AI-powered workflow that automatically scans merged pull requests and commits from the last 24 hours, identifies features that need documentation, and creates pull requests with updated documentation.
+
+### File Location
+
+```
+.github/workflows/daily-doc-updater.md (source)
+.github/workflows/daily-doc-updater.lock.yml (compiled - already included)
+```
+
+### How It Works
+
+1. **Runs Daily** via GitHub Actions scheduled workflow
+2. **Scans Activity**:
+   - Reviews all merged PRs from the last 24 hours
+   - Analyzes recent commits for significant changes
+   - Identifies new features, modifications, and breaking changes
+
+3. **Identifies Documentation Gaps**:
+   - Checks if new features are already documented
+   - Determines which files need updates
+   - Finds the best location for new content
+
+4. **Updates Documentation**:
+   - Follows existing documentation style
+   - Adds sections for new features
+   - Updates modified features
+   - Includes code examples where helpful
+
+5. **Creates Pull Request**:
+   - Automatically creates a PR with documentation updates
+   - Includes links to the merged PRs that triggered the updates
+   - Tagged with `documentation` and `automation` labels
+
+### Benefits
+
+- ✅ Documentation stays up-to-date automatically
+- ✅ Reduces manual documentation burden
+- ✅ Ensures new features are documented promptly
+- ✅ Maintains consistency with existing style
+- ✅ Links documentation to source PRs
+
+### Configuration
+
+The workflow is already deployed and will run automatically. No setup required!
+
+To customize, edit `.github/workflows/daily-doc-updater.md` and recompile if needed.
+
+---
+
+## System 4: Daily Repository Status
+
+### What is it?
+
+An AI-powered workflow that generates comprehensive daily status reports as GitHub issues, providing insights into repository activity, progress tracking, and actionable recommendations.
+
+### File Location
+
+```
+.github/workflows/daily-repo-status.md (source)
+.github/workflows/daily-repo-status.lock.yml (compiled - already included)
+```
+
+### How It Works
+
+1. **Runs Daily** via GitHub Actions scheduled workflow
+2. **Gathers Activity**:
+   - Recent issues and pull requests
+   - Discussions and comments
+   - Releases and code changes
+   - Community contributions
+
+3. **Generates Report**:
+   - Progress tracking and highlights
+   - Productivity insights
+   - Goal reminders
+   - Project status and health metrics
+
+4. **Posts as GitHub Issue**:
+   - Creates a new issue with the report
+   - Tagged with `report` and `daily-status` labels
+   - Provides actionable next steps for maintainers
+
+### Benefits
+
+- ✅ Daily visibility into project health
+- ✅ Keeps team informed of activity
+- ✅ Identifies trends and patterns
+- ✅ Provides actionable recommendations
+- ✅ Encourages team engagement
+
+### Configuration
+
+The workflow is already deployed and will run automatically. No setup required!
+
+To customize, edit `.github/workflows/daily-repo-status.md` and recompile if needed.
 
 ---
 
