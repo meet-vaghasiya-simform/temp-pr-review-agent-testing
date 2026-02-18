@@ -6,4 +6,7 @@
     </div>
 </template>
 
-<script setup></script>
+<script setup>
+console.log('App.vue loaded')
+
+</script>
