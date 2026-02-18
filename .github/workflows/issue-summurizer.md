@@ -6,7 +6,10 @@ on:
     types: [opened]
 
 permissions:
-  issues: read
+  contents: read
+
+safe-outputs:
+  add-comment:
 
 jobs:
   summarize-issues:
