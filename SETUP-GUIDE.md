@@ -1,16 +1,18 @@
-# PR Reviewer Setup Guide
+# Setup Guide - AI-Powered Tools
 
-This repository now includes **two complementary code review systems** that work together to improve code quality:
+This repository includes **three AI-powered tools** using GitHub Copilot:
 
-1. **Custom Copilot Agent** - Manual reviews in VS Code/GitHub.com
-2. **Agentic Workflow** - Automatic reviews triggered on push/PR events
+1. **Custom Copilot Agent** - Manual code reviews in VS Code/GitHub.com
+2. **Daily Documentation Updater** - Automatically updates documentation based on code changes
+3. **Daily Repo Status** - Creates daily status reports and insights
 
 ---
 
 ## 📋 Table of Contents
 
-- [System 1: Custom Copilot Agent (Manual Reviews)](#system-1-custom-copilot-agent-manual-reviews)
-- [System 2: Agentic Workflow (Automatic Reviews)](#system-2-agentic-workflow-automatic-reviews)
+- [Tool 1: Custom Copilot Agent (Manual Reviews)](#tool-1-custom-copilot-agent-manual-reviews)
+- [Tool 2: Daily Documentation Updater](#tool-2-daily-documentation-updater)
+- [Tool 3: Daily Repo Status](#tool-3-daily-repo-status)
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
 - [Comparison](#comparison)
@@ -18,7 +20,7 @@ This repository now includes **two complementary code review systems** that work
 
 ---
 
-## System 1: Custom Copilot Agent (Manual Reviews)
+## Tool 1: Custom Copilot Agent (Manual Reviews)
 
 ### What is it?
 
@@ -80,18 +82,27 @@ A specialized Copilot agent that you can invoke in Visual Studio Code or GitHub.
 
 ---
 
-## System 2: Agentic Workflow (Automatic Reviews)
+## Tool 2: Daily Documentation Updater
 
 ### What is it?
 
-An AI-powered GitHub Actions workflow that **automatically triggers** when code is pushed or a PR is created. It analyzes changes and posts review comments without any manual intervention.
+An AI-powered GitHub Actions workflow that automatically scans merged pull requests from the last 24 hours, identifies new features or changes that need documentation, and creates pull requests to update the documentation files.
 
 ### File Location
 
 ```
-.github/workflows/code-review-agent.md (source - needs compilation)
-.github/workflows/code-review-agent.lock.yml (compiled - auto-generated)
+.github/workflows/daily-doc-updater.md (source)
+.github/workflows/daily-doc-updater.lock.yml (compiled - auto-generated)
 ```
+
+### How it Works
+
+The workflow runs daily (via cron schedule) and:
+1. Scans for merged PRs and commits from the last 24 hours
+2. Analyzes changes to identify new features, modifications, or removed functionality
+3. Reviews existing documentation to identify gaps
+4. Updates documentation files following the repository's style
+5. Creates a pull request with the documentation improvements
 
 ### Prerequisites
 
@@ -102,109 +113,114 @@ An AI-powered GitHub Actions workflow that **automatically triggers** when code 
    gh extension install github/gh-aw
    ```
 
-2. **Verify Installation**
-   ```bash
-   gh aw --version
-   ```
-
-3. **Have Repository Access**
-   - GitHub Copilot subscription (Pro, Pro+, Business, or Enterprise)
+2. **GitHub Copilot Subscription**
+   - Required: GitHub Copilot Pro, Pro+, Business, or Enterprise
    - Repository write access to commit the generated workflow file
-
-### Setup Instructions
 
 #### Step 1: Compile the Workflow
 
 The markdown file needs to be compiled into a GitHub Actions workflow:
 
 ```bash
-# Navigate to your repository
-cd c:\Users\meet.vaghasiya\Desktop\projects\demo\PR-reviewer
+# Navigate to repository root
+cd /path/to/your/repo
 
 # Compile the workflow
-gh aw compile .github/workflows/code-review-agent.md
+gh aw compile .github/workflows/daily-doc-updater.md
 
-# This creates .github/workflows/code-review-agent.lock.yml
-```
+# This creates .github/workflows/daily-doc-updater.lock.yml
 
-#### Step 2: Commit and Push
-
-```bash
-git add .github/workflows/code-review-agent.lock.yml
-git commit -m "Add automated PR review workflow"
+# Commit and push
+git add .github/workflows/daily-doc-updater.lock.yml
+git commit -m "Add daily documentation updater workflow"
 git push
 ```
 
-#### Step 3: Verify Deployment
+#### Step 2: Verify the Workflow
 
-1. Go to your GitHub repository
-2. Navigate to **Actions** tab
-3. You should see "Code Review Agent - Automatic PR Analyzer" workflow
-4. Make a test push or create a PR to trigger it
+1. Go to your repository on GitHub
+2. Click on the "Actions" tab
+3. You should see "Daily Documentation Updater" workflow
+4. The workflow will run daily automatically, or you can trigger it manually using "workflow_dispatch"
 
-### How It Works
+### Benefits
 
-1. **Triggers automatically** when:
-   - Code is pushed to `main`, `develop`, or `feature/**` branches
-   - A pull request is opened, synchronized, or reopened
-
-2. **Analyzes** all changed files for:
-   - Security vulnerabilities
-   - Performance issues
-   - Code quality problems
-   - Framework-specific best practices
-   - Testing gaps
-
-3. **Posts a review** with:
-   - Categorized findings (Critical, Important, Nice-to-Have)
-   - Specific file and line references
-   - Code quality metrics
-   - Recommended labels
-
-4. **Takes actions**:
-   - Adds relevant labels (`security`, `performance`, `needs-tests`, etc.)
-   - Creates issues for critical security problems
-   - Posts comments on PRs or commits
+- ✅ Keeps documentation automatically up-to-date
+- ✅ Catches documentation gaps from recent changes
+- ✅ Maintains consistent documentation style
+- ✅ Creates reviewable PRs instead of direct commits
+- ✅ Reduces manual documentation maintenance
 
 ### Customization
 
-Edit `.github/workflows/code-review-agent.md` to customize:
+Edit `.github/workflows/daily-doc-updater.md` to customize:
+- Schedule timing (currently runs daily)
+- Documentation scanning behavior
+- PR labels and title format
+- The agent's instructions
 
-- **Triggers**: Change which branches or events trigger reviews
-  ```yaml
-  on:
-    push:
-      branches:
-        - main
-        - your-branch-pattern
-  ```
-
-- **Review Focus**: Modify the instructions to emphasize specific concerns
-  - Add more security checks
-  - Focus on specific file types
-  - Adjust sensitivity levels
-
-After editing, **recompile**:
+After editing, recompile:
 ```bash
-gh aw compile .github/workflows/code-review-agent.md
-git add .github/workflows/code-review-agent.lock.yml
-git commit -m "Update review workflow"
+gh aw compile .github/workflows/daily-doc-updater.md
+git add .github/workflows/daily-doc-updater.lock.yml
+git commit -m "Update documentation updater workflow"
 git push
 ```
 
-### Benefits of Automatic Reviews
+---
 
-- ✅ Immediate feedback on every push
-- ✅ Catches issues before manual review
-- ✅ Consistent review quality
-- ✅ No human intervention needed
-- ✅ Works 24/7
+## Tool 3: Daily Repo Status
+
+### What is it?
+
+An AI-powered GitHub Actions workflow that creates daily status reports as GitHub issues. It gathers recent repository activity and generates engaging reports with productivity insights, community highlights, and actionable recommendations.
+
+### File Location
+
+```
+.github/workflows/daily-repo-status.md (source)
+.github/workflows/daily-repo-status.lock.yml (compiled - auto-generated)
+```
+
+### How it Works
+
+The workflow runs daily and:
+1. Gathers recent activity (issues, PRs, discussions, releases, code changes)
+2. Analyzes progress and identifies trends
+3. Creates a GitHub issue with an upbeat status report
+4. Provides actionable next steps for maintainers
+
+### Prerequisites
+
+Same as Daily Documentation Updater:
+- GitHub CLI with `gh-aw` extension
+- GitHub Copilot subscription
+
+#### Setup Steps
+
+```bash
+# Compile the workflow
+gh aw compile .github/workflows/daily-repo-status.md
+
+# Commit and push
+git add .github/workflows/daily-repo-status.lock.yml
+git commit -m "Add daily repo status workflow"
+git push
+```
+
+### Benefits
+
+- ✅ Daily visibility into repository health
+- ✅ Tracks trends and progress over time
+- ✅ Provides actionable recommendations
+- ✅ Encourages community engagement
+- ✅ Helps maintainers stay organized
 
 ---
 
 ## Prerequisites
 
-### Required for Both Systems:
+### Required for All Tools:
 
 1. **GitHub Copilot Subscription**
    - GitHub Copilot Pro ($10/month)
@@ -218,7 +234,7 @@ git push
 
 2. **Visual Studio Code** with GitHub Copilot extension
 
-### Required for Agentic Workflow Only:
+### Required for Agentic Workflows (Daily Doc Updater & Repo Status):
 
 3. **GitHub CLI with Agentic Workflows Extension**
    ```bash
@@ -242,39 +258,40 @@ git push
 3. Select "PR Reviewer" agent
 4. Ask: "Review my recent changes"
 
-### To Deploy Agentic Workflow (Automatic Reviews):
+### To Deploy Agentic Workflows:
 
 ```bash
 # 1. Install gh-aw extension
 gh extension install github/gh-aw
 
-# 2. Compile the workflow
-gh aw compile .github/workflows/code-review-agent.md
+# 2. Compile both workflows
+gh aw compile .github/workflows/daily-doc-updater.md
+gh aw compile .github/workflows/daily-repo-status.md
 
 # 3. Commit and push
-git add .github/workflows/code-review-agent.lock.yml
-git commit -m "Add automated code review workflow"
+git add .github/workflows/*.lock.yml
+git commit -m "Add agentic workflows"
 git push
 
-# 4. Test by pushing a change
-git commit --allow-empty -m "Test workflow trigger"
-git push
+# 4. Workflows will run automatically on their schedules
+# Or trigger manually from Actions tab on GitHub
 ```
 
 ---
 
 ## Comparison
 
-| Feature | Custom Copilot Agent | Agentic Workflow |
-|---------|---------------------|------------------|
-| **Trigger** | Manual (on-demand) | Automatic (push/PR) |
-| **Location** | VS Code / GitHub.com | GitHub Actions |
-| **Cost** | No extra cost* | Uses GitHub Actions minutes |
-| **Speed** | Instant when invoked | Runs within minutes of push |
-| **Interactivity** | Full conversation | One-way (posts comment) |
-| **Local Changes** | ✅ Can review uncommitted | ❌ Only committed changes |
-| **Learning** | ✅ Great for education | ✅ Catches issues early |
-| **Setup Complexity** | Very easy | Moderate (needs compilation) |
+| Feature | Custom Agent | Daily Doc Updater | Daily Repo Status |
+|---------|-------------|-------------------|-------------------|
+| **Trigger** | Manual (on-demand) | Daily (scheduled) | Daily (scheduled) |
+| **Purpose** | Code review | Documentation updates | Repository insights |
+| **Location** | VS Code / GitHub.com | GitHub Actions | GitHub Actions |
+| **Output** | Chat conversation | Pull request | GitHub issue |
+| **Cost** | No extra cost* | Uses Actions minutes | Uses Actions minutes |
+| **Interactivity** | Full conversation | Automated | Automated |
+| **Local Changes** | ✅ Can review uncommitted | ❌ Only committed changes | ❌ Only committed changes |
+| **Learning** | ✅ Great for education | ✅ Keeps docs updated | ✅ Team visibility |
+| **Setup Complexity** | Very easy | Moderate (needs compilation) | Moderate (needs compilation) |
 
 *Requires Copilot subscription
 
@@ -287,17 +304,17 @@ git push
 - Reviewing uncommitted local changes
 - Need interactive back-and-forth
 
-**Use Agentic Workflow when:**
-- Want automatic quality gates
-- Need consistent reviews on all PRs
-- Working in teams (automated checks for everyone)
-- Want to catch issues before human review
-- Maintaining high security standards
+**Use Daily Doc Updater when:**
+- Documentation tends to fall behind code changes
+- Want automated documentation maintenance
+- Need consistent documentation style
+- Have frequent feature releases
 
-**Use Both when:**
-- You want the best of both worlds! 🚀
-- Automatic reviews catch obvious issues
-- Manual reviews for deeper consultation
+**Use Daily Repo Status when:**
+- Managing an active repository
+- Want daily visibility into progress
+- Need actionable insights for maintainers
+- Tracking community engagement
 
 ---
 
@@ -320,14 +337,15 @@ git push
 **Workflow doesn't appear in Actions tab:**
 1. Verify you compiled the markdown file:
    ```bash
-   gh aw compile .github/workflows/code-review-agent.md
+   gh aw compile .github/workflows/daily-doc-updater.md
+   gh aw compile .github/workflows/daily-repo-status.md
    ```
-2. Ensure `.lock.yml` file was created and committed
+2. Ensure `.lock.yml` files were created and committed
 3. Check GitHub Actions is enabled for the repository
 4. Verify you have GitHub Copilot subscription
 
 **Workflow fails to run:**
-1. Check workflow file syntax in `.lock.yml`
+1. Check workflow file syntax in `.lock.yml` files
 2. Verify repository permissions (Settings → Actions → General)
 3. Check Actions logs for error messages
 4. Ensure safe-outputs are properly configured
@@ -362,19 +380,19 @@ gh extension upgrade gh-aw
    - Open VS Code and try reviewing some code
    - Get familiar with the types of issues it catches
 
-2. **Deploy the Agentic Workflow**
+2. **Deploy the Agentic Workflows**
    - Install gh-aw extension
-   - Compile and push the workflow
-   - Test with a sample commit
+   - Compile both workflows
+   - Workflows will run on their daily schedules
 
-3. **Customize Both Systems**
+3. **Customize the Tools**
    - Adjust the agent's focus areas based on your needs
-   - Modify workflow triggers for your branching strategy
+   - Modify workflow schedules or behavior
    - Add team-specific guidelines
 
 4. **Monitor and Iterate**
-   - Review the automated comments for quality
-   - Adjust sensitivity and focus areas
+   - Review the automated documentation updates
+   - Check daily status reports for insights
    - Gather team feedback
 
 ---
@@ -384,10 +402,12 @@ gh extension upgrade gh-aw
 ```
 .github/
 ├── agents/
-│   └── pr-reviewer.agent.md          # Custom Copilot agent definition
+│   └── pr-reviewer.agent.md           # Custom Copilot agent definition
 └── workflows/
-    ├── code-review-agent.md           # Agentic workflow source (human-editable)
-    └── code-review-agent.lock.yml     # Compiled workflow (auto-generated, after compilation)
+    ├── daily-doc-updater.md           # Documentation updater source (human-editable)
+    ├── daily-doc-updater.lock.yml     # Compiled workflow (auto-generated)
+    ├── daily-repo-status.md           # Repo status source (human-editable)
+    └── daily-repo-status.lock.yml     # Compiled workflow (auto-generated)
 ```
 
 ---
@@ -398,7 +418,7 @@ gh extension upgrade gh-aw
 
 2. **Agentic Workflows are in public preview** - expect potential changes and updates.
 
-3. **Both systems require active Copilot subscription** - ensure your subscription is active.
+3. **All tools require active Copilot subscription** - ensure your subscription is active.
 
 4. **Review automatic feedback** - AI reviews are helpful but not perfect. Use human judgment.
 

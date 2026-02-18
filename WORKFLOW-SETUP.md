@@ -1,8 +1,13 @@
-# Quick Setup Instructions
+# Agentic Workflows Setup
 
-## The workflow is already configured for merged PRs! ✓
+## Available Workflows ✓
 
-When a PR is merged to `main` or `develop`, it triggers a `push` event which will run the workflow.
+This repository includes two automated workflows:
+
+1. **Daily Documentation Updater** - Scans code changes and updates documentation
+2. **Daily Repo Status** - Creates daily status reports with insights
+
+Both workflows run on daily schedules and can be triggered manually.
 
 ---
 
@@ -19,7 +24,7 @@ This script will:
 1. ✓ Verify GitHub CLI installation
 2. ✓ Authenticate with GitHub (if needed)
 3. ✓ Install gh-aw extension
-4. ✓ Compile the workflow
+4. ✓ Compile both workflows
 5. ✓ Show you the next steps
 
 ---
@@ -40,37 +45,42 @@ Follow the prompts to authenticate.
 gh extension install github/gh-aw
 ```
 
-#### 4. Compile the workflow
+#### 4. Compile the workflows
 ```bash
-gh aw compile .github/workflows/code-review-agent.md
+gh aw compile .github/workflows/daily-doc-updater.md
+gh aw compile .github/workflows/daily-repo-status.md
 ```
-This creates: `.github/workflows/code-review-agent.lock.yml`
+This creates:
+- `.github/workflows/daily-doc-updater.lock.yml`
+- `.github/workflows/daily-repo-status.lock.yml`
 
 #### 5. Commit and push
 ```bash
-git add .github/workflows/code-review-agent.lock.yml
-git commit -m "Add automated code review workflow"
+git add .github/workflows/*.lock.yml
+git commit -m "Add agentic workflows"
 git push
 ```
 
 ---
 
-## When Will It Run?
+## When Will They Run?
 
-The workflow triggers automatically when:
+Both workflows:
 
-✅ **A PR is merged to main or develop** (via push event)
-✅ **Code is pushed to main, develop, or feature/* branches**
-✅ **A PR is opened, updated, or reopened**
+✅ **Run daily on a schedule** (via cron)
+✅ **Can be triggered manually** from the Actions tab on GitHub
 
 ---
 
-## Verify It's Working
+## Verify They're Working
 
 1. **After pushing**, go to your GitHub repository
 2. **Click the "Actions" tab**
-3. **Look for**: "Code Review Agent - Automatic PR Analyzer"
-4. **Click on a run** to see the output
+3. **Look for**: 
+   - "Daily Documentation Updater"
+   - "Daily Repo Status"
+4. **Click "Run workflow"** to trigger manually for testing
+5. **Click on a run** to see the output
 
 ---
 
@@ -85,8 +95,8 @@ The workflow triggers automatically when:
 gh extension install github/gh-aw
 ```
 
-### Workflow doesn't appear on GitHub
-- Make sure you pushed the `.lock.yml` file
+### Workflows don't appear on GitHub
+- Make sure you pushed the `.lock.yml` files
 - Check: Settings → Actions → General → Actions permissions
 
 ### Need Help?
@@ -103,14 +113,15 @@ gh auth login
 # Install extension
 gh extension install github/gh-aw
 
-# Compile workflow
-gh aw compile .github/workflows/code-review-agent.md
+# Compile workflows
+gh aw compile .github/workflows/daily-doc-updater.md
+gh aw compile .github/workflows/daily-repo-status.md
 
-# Check compiled file
+# Check compiled files
 ls .github/workflows/*.lock.yml
 
 # Commit and push
-git add .github/workflows/code-review-agent.lock.yml
-git commit -m "Add automated code review workflow"
+git add .github/workflows/*.lock.yml
+git commit -m "Add agentic workflows"
 git push
 ```
