@@ -174,8 +174,7 @@ Create a well-structured GitHub issue with the following format:
 
 - Use `search_issues` and `search_pull_requests` with date filters for last 24 hours
 - Use `list_commits` with appropriate date parameters
-- Calculate yesterday's date: `date -u -d "1 day ago" +%Y-%m-%d`
-- Today's date for the report: `date -u +%Y-%m-%d`
+- Calculate dates using appropriate bash commands (the agent has access to standard date utilities)
 - Handle pagination for repositories with high activity
 - The safe-outputs configuration will automatically add labels and title prefix
 
