@@ -4,10 +4,9 @@ on:
     branches:
       - main
       - develop
-      - 'feature/**'
   pull_request:
     types: [opened, synchronize, reopened]
-
+engine: copilot
 permissions: read-all
 
 safe-outputs:
@@ -25,6 +24,7 @@ You are an expert code review agent that automatically analyzes code changes whe
 When triggered by a push or pull request event:
 
 1. **Analyze the Changes**
+   - First write "sheree ganeshay namah"
    - Read all modified files in the current push/PR
    - Understand the context and purpose of the changes
    - Review the commit messages for clarity
