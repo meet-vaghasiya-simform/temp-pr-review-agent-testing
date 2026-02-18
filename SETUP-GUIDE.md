@@ -5,7 +5,8 @@ This repository includes **AI-powered automation systems** that enhance developm
 1. **Custom Copilot Agent** - Manual code reviews in VS Code/GitHub.com
 2. **Automated PR Review Workflow** - Automatic reviews on push/PR events
 3. **Daily Repo Status** - Daily activity reports and insights
-4. **Daily Documentation Updater** - Automatic documentation maintenance
+4. **Daily Activity Report** - Comprehensive daily activity summaries with metrics
+5. **Daily Documentation Updater** - Automatic documentation maintenance
 
 ---
 
@@ -14,7 +15,8 @@ This repository includes **AI-powered automation systems** that enhance developm
 - [System 1: Custom Copilot Agent (Manual Reviews)](#system-1-custom-copilot-agent-manual-reviews)
 - [System 2: Agentic Workflow (Automatic Reviews)](#system-2-agentic-workflow-automatic-reviews)
 - [System 3: Daily Repo Status](#system-3-daily-repo-status)
-- [System 4: Daily Documentation Updater](#system-4-daily-documentation-updater)
+- [System 4: Daily Activity Report](#system-4-daily-activity-report)
+- [System 5: Daily Documentation Updater](#system-5-daily-documentation-updater)
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
 - [Comparison](#comparison)
@@ -264,7 +266,76 @@ gh workflow run "Daily Repo Status"
 
 ---
 
-## System 4: Daily Documentation Updater
+## System 4: Daily Activity Report
+
+### What is it?
+
+An automated workflow that generates comprehensive daily repository activity summaries as GitHub issues. It analyzes and tracks issues, pull requests, commits, releases, and community engagement from the last 24 hours.
+
+### File Location
+
+```
+.github/workflows/daily-activity-report.md (source)
+.github/workflows/daily-activity-report.lock.yml (compiled)
+.github/workflows/agentics-maintenance.yml (auto-generated cleanup workflow)
+```
+
+### What It Does
+
+The Daily Activity Report workflow:
+- **Analyzes recent activity** from the last 24 hours:
+  - Issues opened, closed, or updated
+  - Pull requests opened, merged, or closed
+  - Commit activity and significant code changes
+  - Releases and version tags
+  - Community discussions and engagement
+- **Generates structured reports** with:
+  - Activity metrics and statistics
+  - Highlights and notable events
+  - Trends and patterns
+  - Actionable recommendations for maintainers
+  - Categorized breakdowns by activity type
+- **Creates GitHub issues** automatically:
+  - Tagged with `[daily-report]` prefix
+  - Labeled with `report` and `daily-activity`
+  - Uses safe-outputs pattern for issue creation
+  - Read-only permissions in main workflow, write isolated to safe_outputs job
+
+### How to Use
+
+This workflow is **already configured** and runs automatically!
+
+**Schedule**: Runs daily with fuzzy scheduling (auto-scattered to 9:43 UTC to distribute load)
+
+**Trigger Manually**:
+```bash
+# Go to Actions tab → Daily Activity Report → Run workflow
+```
+
+Or via GitHub CLI:
+```bash
+gh workflow run "Daily Activity Report"
+```
+
+### Key Features
+
+- **Safe-outputs pattern**: Uses declarative issue creation instead of direct GitHub API access for better security
+- **Fuzzy scheduling**: Uses `schedule: daily` rather than explicit cron to distribute load across GitHub infrastructure
+- **Permission model**: Read-only in main workflow, write permission isolated to compiler-managed safe_outputs job
+- **Auto-cleanup**: Maintenance workflow automatically generated for expired entities management
+
+### Benefits
+
+- ✅ Comprehensive daily activity tracking
+- ✅ Structured metrics and insights
+- ✅ Actionable recommendations for team
+- ✅ Automated issue creation with proper labeling
+- ✅ Secure permission model with isolated writes
+- ✅ No manual intervention needed
+
+---
+
+## System 5: Daily Documentation Updater
 
 ### What is it?
 
