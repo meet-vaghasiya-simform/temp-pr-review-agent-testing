@@ -15,8 +15,7 @@ safe-outputs:
   add-comment:        # Allow adding comments to PRs/commits
   add-labels:          # Allow adding labels
   create-issue:       # Allow creating issues for serious problems
-  update-pull-request-title:    # Allow updating PR title
-  update-pull-request-body:     # Allow updating PR description
+  update-pull-request:    # Allow updating PR title and description
 ---
 
 # Code Review Agent - Automatic PR Analyzer
