@@ -26,7 +26,14 @@ This project includes multiple AI-powered systems to enhance development workflo
    - Provides productivity insights and actionable next steps
    - Includes community highlights and project recommendations
 
-4. **Daily Documentation Updater** (`.github/workflows/daily-doc-updater.md`)
+4. **Daily Activity Report** (`.github/workflows/daily-activity-report.md`)
+   - Generates comprehensive daily repository activity summaries as GitHub issues
+   - Tracks issues, PRs, commits, releases, and community engagement from the last 24 hours
+   - Provides activity metrics, highlights, trends, and actionable recommendations
+   - Uses safe-outputs pattern for issue creation with `[daily-report]` prefix and labels
+   - Automatically scheduled daily with fuzzy timing to distribute load
+
+5. **Daily Documentation Updater** (`.github/workflows/daily-doc-updater.md`)
    - Scans for merged PRs and code changes in the last 24 hours
    - Automatically identifies documentation gaps for new features
    - Updates relevant documentation files to keep docs in sync with code
