@@ -1,6 +1,6 @@
 ---
 on:
-  schedule: weekly
+  schedule: daily
 engine: copilot
 permissions: read-all
 imports:

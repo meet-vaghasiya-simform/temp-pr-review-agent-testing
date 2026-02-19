@@ -26,13 +26,13 @@
 #   Imports:
 #     - ../agents/security-reviewer.agent.md
 #
-# frontmatter-hash: 9dd0f60083a71d548037374f9fd8d13c37d844d3b47b15738448e71e9f880f94
+# frontmatter-hash: b02953f5790e5234ad2ce0d5a3f50ee761d341ce504de9c2507dccfc696b1f61
 
 name: "Weekly Security Check - Automated Security Analysis"
 "on":
   schedule:
-  - cron: "58 2 * * 4"
-    # Friendly format: weekly (scattered)
+  - cron: "58 2 * * *"
+    # Friendly format: daily (scattered)
   workflow_dispatch:
 
 permissions: {}
