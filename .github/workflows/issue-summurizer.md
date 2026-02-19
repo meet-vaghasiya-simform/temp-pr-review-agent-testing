@@ -17,7 +17,4 @@ jobs:
       - run: copilot "Summarize the most recent issues in the repository and create a new issue with insights, highlights, and recommendations."
 ---
 
-
-# Daily Repo Status
-
-You have to understand the issue, help me summarize it, explain how to fix it in simple language, add a comment, and suggest a plan for improvement and resolution.
+Summarize issue and response in comment

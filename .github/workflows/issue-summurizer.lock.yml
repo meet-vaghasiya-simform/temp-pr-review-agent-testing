@@ -25,7 +25,7 @@
 #
 # frontmatter-hash: 455a0b4b9e14e5ebb8eadff956e8c2de68615be2028e53cef573f7a757e12724
 
-name: "Daily Repo Status"
+name: "Issue Summurizer"
 "on":
   issues:
     types:
@@ -36,7 +36,7 @@ permissions: {}
 concurrency:
   group: "gh-aw-${{ github.workflow }}-${{ github.event.issue.number }}"
 
-run-name: "Daily Repo Status"
+run-name: "Issue Summurizer"
 
 jobs:
   activation:
@@ -292,7 +292,7 @@ jobs:
               version: "",
               agent_version: "0.0.410",
               cli_version: "v0.45.4",
-              workflow_name: "Daily Repo Status",
+              workflow_name: "Issue Summurizer",
               experimental: false,
               supports_tools_allowlist: true,
               run_id: context.runId,
@@ -799,7 +799,7 @@ jobs:
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
           GH_AW_NOOP_MAX: 1
-          GH_AW_WORKFLOW_NAME: "Daily Repo Status"
+          GH_AW_WORKFLOW_NAME: "Issue Summurizer"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
@@ -812,7 +812,7 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
-          GH_AW_WORKFLOW_NAME: "Daily Repo Status"
+          GH_AW_WORKFLOW_NAME: "Issue Summurizer"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
@@ -825,7 +825,7 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
-          GH_AW_WORKFLOW_NAME: "Daily Repo Status"
+          GH_AW_WORKFLOW_NAME: "Issue Summurizer"
           GH_AW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GH_AW_AGENT_CONCLUSION: ${{ needs.agent.result }}
           GH_AW_WORKFLOW_ID: "issue-summurizer"
@@ -843,7 +843,7 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
-          GH_AW_WORKFLOW_NAME: "Daily Repo Status"
+          GH_AW_WORKFLOW_NAME: "Issue Summurizer"
           GH_AW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GH_AW_AGENT_CONCLUSION: ${{ needs.agent.result }}
           GH_AW_NOOP_MESSAGE: ${{ steps.noop.outputs.noop_message }}
@@ -889,7 +889,7 @@ jobs:
       - name: Setup threat detection
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
-          WORKFLOW_NAME: "Daily Repo Status"
+          WORKFLOW_NAME: "Issue Summurizer"
           WORKFLOW_DESCRIPTION: "A GitHub issue summarizer workflow that creates a summary of the most recent issues in the repository. It gathers recent issues and generates engaging GitHub issues with insights, highlights, and recommendations."
           HAS_PATCH: ${{ needs.agent.outputs.has_patch }}
         with:
@@ -992,7 +992,7 @@ jobs:
     env:
       GH_AW_ENGINE_ID: "copilot"
       GH_AW_WORKFLOW_ID: "issue-summurizer"
-      GH_AW_WORKFLOW_NAME: "Daily Repo Status"
+      GH_AW_WORKFLOW_NAME: "Issue Summurizer"
     outputs:
       create_discussion_error_count: ${{ steps.process_safe_outputs.outputs.create_discussion_error_count }}
       create_discussion_errors: ${{ steps.process_safe_outputs.outputs.create_discussion_errors }}
