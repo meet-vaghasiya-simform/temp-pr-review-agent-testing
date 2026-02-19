@@ -9,7 +9,7 @@ on:
 engine: copilot
 permissions: read-all
 imports:
-  - .github/agents/pr-reviewer.agent.md
+  - ../agents/pr-reviewer.agent.md
 
 safe-outputs:
   add-comment:        # Allow adding comments to PRs/commits

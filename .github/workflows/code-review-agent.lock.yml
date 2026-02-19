@@ -22,7 +22,11 @@
 # For more information: https://github.github.com/gh-aw/introduction/overview/
 #
 #
-# frontmatter-hash: 1d0cc4858172c9ad186b940082abfad6d04f0ca391d4efb299da4671b93ff2b9
+# Resolved workflow manifest:
+#   Imports:
+#     - ../agents/pr-reviewer.agent.md
+#
+# frontmatter-hash: 067e78518fc0d39581ae24f8a35b49b3ef44bb335ca0f0b7c302f79975c50ce4
 
 name: "Code Review Agent - Automatic PR Analyzer"
 "on":
@@ -158,6 +162,9 @@ jobs:
           GH_AW_PROMPT_EOF
           cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
           </system>
+          GH_AW_PROMPT_EOF
+          cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
+          {{#runtime-import ../agents/pr-reviewer.agent.md}}
           GH_AW_PROMPT_EOF
           cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
           {{#runtime-import .github/workflows/code-review-agent.md}}
