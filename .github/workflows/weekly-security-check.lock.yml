@@ -21,18 +21,19 @@
 #
 # For more information: https://github.github.com/gh-aw/introduction/overview/
 #
-# Daily automated security analysis to identify vulnerabilities and ensure compliance with security best practices using DailyOps pattern.
+# Weekly automated security analysis to identify vulnerabilities and ensure compliance with security best practices using DailyOps pattern.
 #
 # Resolved workflow manifest:
 #   Imports:
 #     - ../agents/security-reviewer.agent.md
 #
-# frontmatter-hash: f55b597490185d357fca9141d1e45d7c73906da16be2c492915d7bd92d72527d
+# frontmatter-hash: b61454637ec834ab8af5881974fd870da7e018bec36a674b0ec71ad4b3631114
 
-name: "Daily Security Check - Automated Security Analysis"
+name: "Weekly Security Check - Automated Security Analysis"
 "on":
   schedule:
-  - cron: "0 2 * * 1-5"
+  - cron: "58 2 * * 4"
+    # Friendly format: weekly (scattered)
   workflow_dispatch:
 
 permissions: {}
@@ -40,7 +41,7 @@ permissions: {}
 concurrency:
   group: "gh-aw-${{ github.workflow }}"
 
-run-name: "Daily Security Check - Automated Security Analysis"
+run-name: "Weekly Security Check - Automated Security Analysis"
 
 jobs:
   activation:
@@ -313,7 +314,7 @@ jobs:
               version: "",
               agent_version: "0.0.410",
               cli_version: "v0.45.4",
-              workflow_name: "Daily Security Check - Automated Security Analysis",
+              workflow_name: "Weekly Security Check - Automated Security Analysis",
               experimental: false,
               supports_tools_allowlist: true,
               run_id: context.runId,
@@ -989,7 +990,7 @@ jobs:
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
           GH_AW_NOOP_MAX: 1
-          GH_AW_WORKFLOW_NAME: "Daily Security Check - Automated Security Analysis"
+          GH_AW_WORKFLOW_NAME: "Weekly Security Check - Automated Security Analysis"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
@@ -1002,7 +1003,7 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
-          GH_AW_WORKFLOW_NAME: "Daily Security Check - Automated Security Analysis"
+          GH_AW_WORKFLOW_NAME: "Weekly Security Check - Automated Security Analysis"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
@@ -1015,7 +1016,7 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
-          GH_AW_WORKFLOW_NAME: "Daily Security Check - Automated Security Analysis"
+          GH_AW_WORKFLOW_NAME: "Weekly Security Check - Automated Security Analysis"
           GH_AW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GH_AW_AGENT_CONCLUSION: ${{ needs.agent.result }}
           GH_AW_WORKFLOW_ID: "weekly-security-check"
@@ -1035,7 +1036,7 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
-          GH_AW_WORKFLOW_NAME: "Daily Security Check - Automated Security Analysis"
+          GH_AW_WORKFLOW_NAME: "Weekly Security Check - Automated Security Analysis"
           GH_AW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GH_AW_AGENT_CONCLUSION: ${{ needs.agent.result }}
           GH_AW_NOOP_MESSAGE: ${{ steps.noop.outputs.noop_message }}
@@ -1083,8 +1084,8 @@ jobs:
       - name: Setup threat detection
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
-          WORKFLOW_NAME: "Daily Security Check - Automated Security Analysis"
-          WORKFLOW_DESCRIPTION: "Daily automated security analysis to identify vulnerabilities and ensure compliance with security best practices using DailyOps pattern."
+          WORKFLOW_NAME: "Weekly Security Check - Automated Security Analysis"
+          WORKFLOW_DESCRIPTION: "Weekly automated security analysis to identify vulnerabilities and ensure compliance with security best practices using DailyOps pattern."
           HAS_PATCH: ${{ needs.agent.outputs.has_patch }}
         with:
           script: |
@@ -1164,7 +1165,7 @@ jobs:
     env:
       GH_AW_ENGINE_ID: "copilot"
       GH_AW_WORKFLOW_ID: "weekly-security-check"
-      GH_AW_WORKFLOW_NAME: "Daily Security Check - Automated Security Analysis"
+      GH_AW_WORKFLOW_NAME: "Weekly Security Check - Automated Security Analysis"
     outputs:
       create_discussion_error_count: ${{ steps.process_safe_outputs.outputs.create_discussion_error_count }}
       create_discussion_errors: ${{ steps.process_safe_outputs.outputs.create_discussion_errors }}
