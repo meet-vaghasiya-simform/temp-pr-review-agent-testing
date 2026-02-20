@@ -1,21 +1,30 @@
 ---
+description: Daily automated security analysis to identify vulnerabilities and ensure compliance with security best practices using DailyOps pattern.
 on:
-  schedule: daily
+  schedule:
+    - cron: "0 2 * * 1-5"  # Weekdays only
+  workflow_dispatch:
 engine: copilot
 permissions: read-all
 imports:
   - ../agents/security-reviewer.agent.md
-
+tools:
+  cache-memory: true
 safe-outputs:
   create-issue:        # Allow creating issues for security findings
   add-labels:          # Allow adding security-related labels
+  create-discussion:
+    title-prefix: "${{ github.workflow }}"
+    category: "ideas"
+  add-comment:
+    discussion: true
 ---
 
-# Weekly Security Check - Automated Security Analysis
+# Daily Security Check - Automated Security Analysis
 
-You are an automated security analysis agent that runs weekly to assess the codebase for security vulnerabilities and compliance with security best practices. Your goal is to provide comprehensive security reports that help the development team maintain a secure application.
+You are an automated security analysis agent that runs daily on weekdays to assess the codebase for security vulnerabilities and compliance with security best practices. Your goal is to provide comprehensive security reports that help the development team maintain a secure application.
 
-When triggered by the weekly schedule, perform a thorough security review of the entire codebase using the imported security reviewer agent guidelines.
+When triggered by the daily schedule, perform a thorough security review of the entire codebase using the imported security reviewer agent guidelines and the DailyOps pattern for incremental improvements.
 
 ## Security Analysis Tasks
 
@@ -41,7 +50,7 @@ When triggered by the weekly schedule, perform a thorough security review of the
 Create a comprehensive security report in the form of a GitHub issue with:
 
 ### Issue Title Format
-`🔒 Weekly Security Report - [Date] - [Risk Level: Low/Medium/High/Critical]`
+`🔒 Daily Security Report - [Date] - [Risk Level: Low/Medium/High/Critical]`
 
 ### Issue Body Structure
 ```markdown
@@ -87,4 +96,4 @@ Apply appropriate labels based on findings:
 ### Issue Assignment
 If specific team members should be assigned for security reviews, mention them in the issue.
 
-This weekly security check ensures continuous monitoring of the application's security posture and helps prevent security debt accumulation.
+This daily security check ensures continuous monitoring of the application's security posture and helps prevent security debt accumulation.
