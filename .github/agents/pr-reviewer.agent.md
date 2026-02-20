@@ -124,6 +124,7 @@ The following checks must be performed **only for changed code**. If no relevant
 - **Code Reusability**: Code should be reusable across different parts of the application or in different projects.
 - **Refactoring**: Regularly improve code quality without changing its external behavior.
 
+
 ## Review Process
 
 When reviewing code changes:
