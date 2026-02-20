@@ -1,9 +1,12 @@
 # PR Reviewer Setup Guide
 
-This repository now includes **two complementary code review systems** that work together to improve code quality:
+This repository includes **AI-powered automation systems** that enhance development workflow:
 
-1. **Custom Copilot Agent** - Manual reviews in VS Code/GitHub.com
-2. **Agentic Workflow** - Automatic reviews triggered on push/PR events
+1. **Custom Copilot Agent** - Manual code reviews in VS Code/GitHub.com
+2. **Automated PR Review Workflow** - Automatic reviews on push/PR events
+3. **Daily Repo Status** - Daily activity reports and insights
+4. **Daily Activity Report** - Comprehensive daily activity summaries with metrics
+5. **Daily Documentation Updater** - Automatic documentation maintenance
 
 ---
 
@@ -11,6 +14,9 @@ This repository now includes **two complementary code review systems** that work
 
 - [System 1: Custom Copilot Agent (Manual Reviews)](#system-1-custom-copilot-agent-manual-reviews)
 - [System 2: Agentic Workflow (Automatic Reviews)](#system-2-agentic-workflow-automatic-reviews)
+- [System 3: Daily Repo Status](#system-3-daily-repo-status)
+- [System 4: Daily Activity Report](#system-4-daily-activity-report)
+- [System 5: Daily Documentation Updater](#system-5-daily-documentation-updater)
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
 - [Comparison](#comparison)
@@ -199,6 +205,209 @@ git push
 - ✅ Consistent review quality
 - ✅ No human intervention needed
 - ✅ Works 24/7
+
+---
+
+## System 3: Daily Repo Status
+
+### What is it?
+
+An automated workflow that runs daily to generate comprehensive repository activity reports. It creates GitHub issues with insights on recent PRs, issues, discussions, releases, and code changes.
+
+### File Location
+
+```
+.github/workflows/daily-repo-status.md (source)
+.github/workflows/daily-repo-status.lock.yml (compiled)
+```
+
+### What It Does
+
+The Daily Repo Status workflow:
+- **Gathers recent activity** from the last 24 hours including:
+  - Merged and open pull requests
+  - New and updated issues
+  - Discussions and comments
+  - Releases and tags
+  - Significant code changes
+- **Generates insights** on:
+  - Team productivity trends
+  - Community engagement highlights
+  - Project progress toward goals
+  - Actionable recommendations for maintainers
+- **Creates a GitHub issue** with a daily status report
+  - Tagged with `[repo-status]` prefix
+  - Labeled with `report` and `daily-status`
+  - Written in an upbeat, encouraging tone
+
+### How to Use
+
+This workflow is **already configured** and runs automatically! 
+
+**Schedule**: Runs daily at a random time
+
+**Trigger Manually**:
+```bash
+# Go to Actions tab → Daily Repo Status → Run workflow
+```
+
+Or via GitHub CLI:
+```bash
+gh workflow run "Daily Repo Status"
+```
+
+### Benefits
+
+- ✅ Stay informed about repository activity
+- ✅ Track progress and identify trends
+- ✅ Get actionable recommendations
+- ✅ Improve team visibility and coordination
+- ✅ No manual effort required
+
+---
+
+## System 4: Daily Activity Report
+
+### What is it?
+
+An automated workflow that generates comprehensive daily repository activity summaries as GitHub issues. It analyzes and tracks issues, pull requests, commits, releases, and community engagement from the last 24 hours.
+
+### File Location
+
+```
+.github/workflows/daily-activity-report.md (source)
+.github/workflows/daily-activity-report.lock.yml (compiled)
+.github/workflows/agentics-maintenance.yml (auto-generated cleanup workflow)
+```
+
+### What It Does
+
+The Daily Activity Report workflow:
+- **Analyzes recent activity** from the last 24 hours:
+  - Issues opened, closed, or updated
+  - Pull requests opened, merged, or closed
+  - Commit activity and significant code changes
+  - Releases and version tags
+  - Community discussions and engagement
+- **Generates structured reports** with:
+  - Activity metrics and statistics
+  - Highlights and notable events
+  - Trends and patterns
+  - Actionable recommendations for maintainers
+  - Categorized breakdowns by activity type
+- **Creates GitHub issues** automatically:
+  - Tagged with `[daily-report]` prefix
+  - Labeled with `report` and `daily-activity`
+  - Uses safe-outputs pattern for issue creation
+  - Read-only permissions in main workflow, write isolated to safe_outputs job
+
+### How to Use
+
+This workflow is **already configured** and runs automatically!
+
+**Schedule**: Runs daily with fuzzy scheduling (auto-scattered to 9:43 UTC to distribute load)
+
+**Trigger Manually**:
+```bash
+# Go to Actions tab → Daily Activity Report → Run workflow
+```
+
+Or via GitHub CLI:
+```bash
+gh workflow run "Daily Activity Report"
+```
+
+### Key Features
+
+- **Safe-outputs pattern**: Uses declarative issue creation instead of direct GitHub API access for better security
+- **Fuzzy scheduling**: Uses `schedule: daily` rather than explicit cron to distribute load across GitHub infrastructure
+- **Permission model**: Read-only in main workflow, write permission isolated to compiler-managed safe_outputs job
+- **Auto-cleanup**: Maintenance workflow automatically generated for expired entities management
+
+### Benefits
+
+- ✅ Comprehensive daily activity tracking
+- ✅ Structured metrics and insights
+- ✅ Actionable recommendations for team
+- ✅ Automated issue creation with proper labeling
+- ✅ Secure permission model with isolated writes
+- ✅ No manual intervention needed
+
+---
+
+## System 5: Daily Documentation Updater
+
+### What is it?
+
+An automated workflow that scans for merged pull requests and code changes from the last 24 hours, identifies documentation gaps, and creates pull requests with documentation updates.
+
+### File Location
+
+```
+.github/workflows/daily-doc-updater.md (source)
+.github/workflows/daily-doc-updater.lock.yml (compiled)
+```
+
+### What It Does
+
+The Daily Documentation Updater workflow:
+- **Scans recent changes** in the last 24 hours:
+  - Merged pull requests
+  - Significant commits
+  - New features and API changes
+- **Identifies documentation gaps**:
+  - Features not yet documented
+  - Modified APIs needing updates
+  - Breaking changes requiring notices
+- **Updates documentation automatically**:
+  - Adds new sections for new features
+  - Updates existing sections for modified features
+  - Maintains consistency with existing documentation style
+  - Includes code examples and links to related PRs
+- **Creates a pull request** with the updates:
+  - Tagged with `[docs]` prefix
+  - Labeled with `documentation` and `automation`
+  - Includes summary of changes and references to source PRs
+
+### How to Use
+
+This workflow is **already configured** and runs automatically!
+
+**Schedule**: Runs daily at a random time
+
+**Trigger Manually**:
+```bash
+# Go to Actions tab → Daily Documentation Updater → Run workflow
+```
+
+Or via GitHub CLI:
+```bash
+gh workflow run "Daily Documentation Updater"
+```
+
+### Benefits
+
+- ✅ Keep documentation in sync with code changes
+- ✅ Reduce manual documentation burden
+- ✅ Ensure new features are documented promptly
+- ✅ Maintain consistent documentation quality
+- ✅ Free up developers to focus on coding
+
+### Customization
+
+Edit `.github/workflows/daily-doc-updater.md` to customize:
+- Time period to scan (default: 24 hours)
+- Documentation style and tone
+- Which files to update
+- PR creation behavior
+
+After editing, **recompile**:
+```bash
+gh aw compile .github/workflows/daily-doc-updater.md
+git add .github/workflows/daily-doc-updater.lock.yml
+git commit -m "Update documentation workflow"
+git push
+```
 
 ---
 

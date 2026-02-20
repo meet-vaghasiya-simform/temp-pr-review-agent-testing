@@ -1,26 +1,50 @@
 # PR Reviewer - Nuxt 3 Project
 
-A Nuxt 3 application with **built-in AI-powered code review systems** using GitHub Copilot.
+A Nuxt 3 application with **built-in AI-powered code review and automation systems** using GitHub Copilot.
 
-## 🤖 AI Code Review Systems
+## 🤖 AI-Powered Automation
 
-This project includes two complementary code review systems:
+This project includes multiple AI-powered systems to enhance development workflow:
+
+### Code Review Systems
 
 1. **Custom Copilot Agent** (`.github/agents/pr-reviewer.agent.md`)
    - Manual code reviews in VS Code or GitHub.com
    - Interactive conversations about code quality
    - Expert in Nuxt.js, Vue.js, TypeScript, and security
 
-2. **Agentic Workflow** (`.github/workflows/code-review-agent.md`)
+2. **Automated PR Review Workflow** (`.github/workflows/code-review-agent.md`)
    - Automatic reviews triggered on push/PR events
    - Posts review comments with security, performance, and quality findings
    - Adds labels and creates issues for critical problems
 
-### 📖 Getting Started with AI Reviews
+### Daily Automation Workflows
+
+3. **Daily Repo Status** (`.github/workflows/daily-repo-status.md`)
+   - Runs daily to generate repository activity reports
+   - Creates GitHub issues with insights on PRs, issues, discussions, and releases
+   - Provides productivity insights and actionable next steps
+   - Includes community highlights and project recommendations
+
+4. **Daily Activity Report** (`.github/workflows/daily-activity-report.md`)
+   - Generates comprehensive daily repository activity summaries as GitHub issues
+   - Tracks issues, PRs, commits, releases, and community engagement from the last 24 hours
+   - Provides activity metrics, highlights, trends, and actionable recommendations
+   - Uses safe-outputs pattern for issue creation with `[daily-report]` prefix and labels
+   - Automatically scheduled daily with fuzzy timing to distribute load
+
+5. **Daily Documentation Updater** (`.github/workflows/daily-doc-updater.md`)
+   - Scans for merged PRs and code changes in the last 24 hours
+   - Automatically identifies documentation gaps for new features
+   - Updates relevant documentation files to keep docs in sync with code
+   - Creates pull requests with documentation improvements
+
+### 📖 Getting Started
 
 See **[SETUP-GUIDE.md](./SETUP-GUIDE.md)** for complete instructions on:
 - Setting up and using the Custom Copilot Agent
-- Deploying the Agentic Workflow
+- Deploying the Code Review Workflow
+- Understanding the daily automation workflows
 - Prerequisites and troubleshooting
 
 ### Quick Start (Custom Agent)
