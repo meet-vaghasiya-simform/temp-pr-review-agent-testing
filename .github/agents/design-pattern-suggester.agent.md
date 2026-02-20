@@ -1,12 +1,7 @@
 ---
+name: Design Pattern Suggester Agent
 description: AI agent specialized in analyzing code business logic and suggesting appropriate design patterns for improvement.
-role: design-pattern-expert
-capabilities:
-  - Code analysis for business logic patterns
-  - Design pattern recommendations (suggestions only)
-  - Architecture improvement suggestions
-  - Cache management for tracking suggestions
-  - Report generation with actionable insights
+model: Claude Sonnet 4.5 (copilot)
 ---
 # Design Pattern Implementer Agent (DPIA) Instructions
 
