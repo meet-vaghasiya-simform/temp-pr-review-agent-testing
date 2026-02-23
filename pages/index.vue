@@ -1,9 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import TodoApp from '../components/TodoApp.vue'
+</script>
 
 <template>
-    <div>
-        <h1>This is the index page</h1>
-    </div>
+  <div>
+    <TodoApp />
+  </div>
 </template>
 
 <style scoped></style>
