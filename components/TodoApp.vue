@@ -6,7 +6,6 @@ type Priority = 'low' | 'medium' | 'high'
 interface Subtask { id: string; title: string; done: boolean }
 interface Todo { id: string; title: string; description?: string; completed: boolean; priority: Priority; due?: string | null; tags: string[]; subtasks: Subtask[]; createdAt: number; recurring?: { interval: 'daily'|'weekly'|'monthly' }; order?: number }
 
-// LocalStorage key kept inside component (no external composable per request)
 const STORAGE_KEY = 'todos-v1'
 const todos = ref<Todo[]>([])
 try {
@@ -16,7 +15,6 @@ try {
   // ignore parse errors
 }
 
-// ensure order field exists and is consistent
 if (todos.value.length && todos.value.some(t => typeof t.order !== 'number')) {
   todos.value.forEach((t, i) => { t.order = i })
 }
@@ -25,7 +23,6 @@ watch(todos, (v) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(v))
   } catch (e) {
-    // ignore quota errors
   }
 }, { deep: true })
 
@@ -44,7 +41,6 @@ function addTodo() {
   if (!newTitle.value.trim()) return
   const t: Todo = { id: makeId(), title: newTitle.value.trim(), description: '', completed: false, priority: newPriority.value, due: newDue.value || null, tags: newTags.value ? newTags.value.split(',').map(s=>s.trim()).filter(Boolean) : [], subtasks: [], createdAt: Date.now(), recurring: newRecurring.value === 'none' ? undefined : { interval: newRecurring.value }, order: 0 }
   todos.value.unshift(t)
-  // renumber orders to persist user ordering
   todos.value.forEach((it, idx) => { it.order = idx })
   newTitle.value = ''
   newTags.value = ''
@@ -58,7 +54,6 @@ function toggleComplete(t: Todo, checked?: boolean) {
   const wasCompleted = t.completed
   const newVal = typeof checked === 'boolean' ? checked : !t.completed
   t.completed = newVal
-  // if marking completed and recurring, create next occurrence
   if (!wasCompleted && t.completed && t.recurring) {
     let nextDue: string | null = null
     if (t.due) {
@@ -102,7 +97,6 @@ function saveEdit(t: Todo) {
 
 function cancelEdit() { editingId.value = null }
 
-// Drag and drop support
 let dragId: string | null = null
 function onDragStart(t: Todo, e: DragEvent) {
   dragId = t.id
@@ -119,7 +113,6 @@ function onDrop(target: Todo, e: DragEvent) {
   if (from === -1 || to === -1) return
   const [item] = todos.value.splice(from, 1)
   todos.value.splice(to, 0, item)
-  // renumber order after reordering
   todos.value.forEach((it, idx) => { it.order = idx })
   dragId = null
 }
