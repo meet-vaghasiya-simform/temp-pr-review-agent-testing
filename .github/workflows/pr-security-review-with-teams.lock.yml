@@ -27,7 +27,7 @@
 #   Imports:
 #     - ./shared/teams-webhook.md
 #
-# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"71c708fc1195ebf585478eabd40e4129859698f5499977988bf9a30c2cb7a9f5","compiler_version":"v0.47.2"}
+# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"faed695ecd3f6ddb31a87aed2036db1bc57c2b59bea4aaee4214bcb915d81444","compiler_version":"v0.47.2"}
 
 name: "PR Teams Notification"
 "on":
@@ -380,7 +380,7 @@ jobs:
           mkdir -p /tmp/gh-aw/safeoutputs
           mkdir -p /tmp/gh-aw/mcp-logs/safeoutputs
           cat > /opt/gh-aw/safeoutputs/config.json << 'GH_AW_SAFE_OUTPUTS_CONFIG_EOF'
-          {"missing_data":{},"missing_tool":{},"noop":{"max":1},"teams-notify":{"description":"Send notification to Microsoft Teams channel","inputs":{"files_changed":{"default":null,"description":"Number of files changed","required":false,"type":"string"},"pr_author":{"default":null,"description":"Pull request author username","required":true,"type":"string"},"pr_number":{"default":null,"description":"Pull request number","required":true,"type":"string"},"pr_title":{"default":null,"description":"Pull request title","required":true,"type":"string"},"pr_url":{"default":null,"description":"Full URL to the pull request","required":true,"type":"string"},"target_branch":{"default":null,"description":"Target branch (develop/main)","required":true,"type":"string"}},"output":"Teams notification sent successfully!"}}
+          {"missing_data":{},"missing_tool":{},"noop":{"max":1},"teams-notify":{"description":"Send notification to Microsoft Teams channel","inputs":{"critical_comments":{"default":null,"description":"Critical reviewer comments or 'No critical issues found.'","required":false,"type":"string"},"files_changed":{"default":null,"description":"Number of files changed","required":false,"type":"string"},"message_type":{"default":null,"description":"Template type for Teams message (pr_review|security|daily_status)","required":false,"type":"string"},"plain_summary":{"default":null,"description":"Plain-language 2-3 sentence summary to show in the message","required":false,"type":"string"},"pr_author":{"default":null,"description":"Pull request author username","required":true,"type":"string"},"pr_number":{"default":null,"description":"Pull request number","required":true,"type":"string"},"pr_title":{"default":null,"description":"Pull request title","required":true,"type":"string"},"pr_url":{"default":null,"description":"Full URL to the pull request","required":true,"type":"string"},"target_branch":{"default":null,"description":"Target branch (develop/main)","required":true,"type":"string"}},"output":"Teams notification sent successfully!"}}
           GH_AW_SAFE_OUTPUTS_CONFIG_EOF
           cat > /opt/gh-aw/safeoutputs/tools.json << 'GH_AW_SAFE_OUTPUTS_TOOLS_EOF'
           [
@@ -458,8 +458,20 @@ jobs:
               "inputSchema": {
                 "additionalProperties": false,
                 "properties": {
+                  "critical_comments": {
+                    "description": "Critical reviewer comments or 'No critical issues found.'",
+                    "type": "string"
+                  },
                   "files_changed": {
                     "description": "Number of files changed",
+                    "type": "string"
+                  },
+                  "message_type": {
+                    "description": "Template type for Teams message (pr_review|security|daily_status)",
+                    "type": "string"
+                  },
+                  "plain_summary": {
+                    "description": "Plain-language 2-3 sentence summary to show in the message",
                     "type": "string"
                   },
                   "pr_author": {
@@ -1132,20 +1144,41 @@ jobs:
               const targetBranch = item.target_branch || 'Unknown';
               const prUrl = item.pr_url || '';
               const filesChanged = item.files_changed || '0';
+              const messageType = (item.message_type || 'pr_review').toLowerCase();
+              const plainSummary = item.plain_summary || '';
+              const criticalComments = item.critical_comments || 'No critical issues found.';
 
-              core.info(`Sending Teams notification for PR #${prNumber}`);
+              core.info(`Sending Teams notification for PR #${prNumber} (type=${messageType})`);
+
+              // Choose theme and titles based on message type
+              let themeColor = '0078d4';
+              let activityTitle = 'Pull Request Raised';
+              let summaryText = 'Pull Request Raised';
+
+              if (messageType === 'security') {
+                themeColor = 'd33d3d';
+                activityTitle = 'Security Report';
+                summaryText = 'Security Scan Results';
+              } else if (messageType === 'daily_status') {
+                themeColor = '28a745';
+                activityTitle = 'Daily Status Update';
+                summaryText = 'Daily Status';
+              }
+
+              // Construct main text including summary and critical comments
+              const mainText = `Kindly note, **@${prAuthor}** has raised PR #${prNumber} - ${prTitle} targeting **${targetBranch}** branch. Please review.\n\n**Files Changed:** ${filesChanged}\n\n**Summary:** ${plainSummary}\n\n**Critical Comments:** ${criticalComments}`;
 
               // Construct Teams MessageCard payload
               const payload = {
                 "@type": "MessageCard",
                 "@context": "http://schema.org/extensions",
-                "themeColor": "0078d4",
-                "summary": "Pull Request Raised",
+                "themeColor": themeColor,
+                "summary": summaryText,
                 "sections": [{
-                  "activityTitle": "Pull Request Raised",
+                  "activityTitle": activityTitle,
                   "activitySubtitle": "[Auto-generated message]",
                   "activityImage": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-                  "text": `Kindly note, **@${prAuthor}** has raised PR #${prNumber} - ${prTitle} targeting **${targetBranch}** branch. Please review.\n\n**Files Changed:** ${filesChanged}`,
+                  "text": mainText,
                   "markdown": true
                 }],
                 "potentialAction": [{
