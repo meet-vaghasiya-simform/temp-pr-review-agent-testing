@@ -1,3 +1,4 @@
+````markdown
 # Quick Reference: Teams Integration
 
 ## TL;DR Setup
@@ -12,9 +13,9 @@
    - Value: [paste webhook URL]
 
 3. **Compile Workflows**
-   ```bash
-   gh aw compile .github/workflows/pr-security-review-with-teams.md
-   ```
+```bash
+gh aw compile .github/workflows/pr-security-review-with-teams.md
+```
 
 4. **Test**
    - Create a PR → Check Teams channel
@@ -23,9 +24,8 @@
 
 | File | Purpose |
 |------|---------|
-| `pr-security-review-with-teams.md` | Main workflow for PR security reviews with Teams notifications |
+| `code-review-agent.md` | Main workflow for PR code reviews and Teams notifications |
 | `shared/safe-outputs/teams-notification.md` | Documentation for Teams safe-output |
-| `shared/tools/teams-notification-tool.md` | Tool definition for Teams integration |
 | `shared/examples/teams-notification-examples.md` | Example payloads and scenarios |
 | `TEAMS-INTEGRATION-SETUP.md` | Complete setup guide |
 
@@ -196,3 +196,5 @@ High Priority:
 ---
 
 **Ready to start?** Go to [TEAMS-INTEGRATION-SETUP.md](../TEAMS-INTEGRATION-SETUP.md) for detailed instructions!
+
+````
