@@ -131,3 +131,8 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## Local Todo App
+
+- Start dev server: `pnpm dev` or `npm run dev`
+- Run tests: `pnpm test` or `npm run test` (Vitest)
