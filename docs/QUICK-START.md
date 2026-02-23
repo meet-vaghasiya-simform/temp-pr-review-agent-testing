@@ -1,3 +1,4 @@
+````markdown
 # Quick Reference - PR Reviewer Systems
 
 ## 🎯 What Was Created
@@ -114,7 +115,6 @@ git push
 - **[.github/agents/pr-reviewer.agent.md](.github/agents/pr-reviewer.agent.md)** - Custom agent configuration
 - **[.github/workflows/code-review-agent.md](.github/workflows/code-review-agent.md)** - PR review workflow source
 - **[.github/workflows/daily-repo-status.md](.github/workflows/daily-repo-status.md)** - Daily status report workflow
-- **[.github/workflows/daily-doc-updater.md](.github/workflows/daily-doc-updater.md)** - Documentation updater workflow
 
 ### External Resources
 
@@ -208,6 +208,8 @@ git ls-files | grep .lock.yml
 
 ## 🎉 You're All Set!
 
-Choose your path above and start improving your code quality with AI-powered reviews!
+Choose your path above and start improving your code quality with AI-powered reviews!n
 
 For detailed information, see [SETUP-GUIDE.md](./SETUP-GUIDE.md).
+
+````

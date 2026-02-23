@@ -42,11 +42,8 @@ This project includes multiple AI-powered systems to enhance development workflo
 ### 📖 Getting Started
 
 See **[SETUP-GUIDE.md](./SETUP-GUIDE.md)** for complete instructions on:
-- Setting up and using the Custom Copilot Agent
-- Deploying the Code Review Workflow
-- Understanding the daily automation workflows
-- Prerequisites and troubleshooting
-
+See **[SETUP-GUIDE.md](./docs/SETUP-GUIDE.md)** for complete instructions on:
+For detailed information, see [SETUP-GUIDE.md](./docs/SETUP-GUIDE.md).
 ### Quick Start (Custom Agent)
 
 1. Open VS Code in this repository

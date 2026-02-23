@@ -1,3 +1,4 @@
+````markdown
 # Quick Setup Instructions
 
 ## The workflow is already configured for merged PRs! ✓

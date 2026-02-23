@@ -1,7 +1,8 @@
 ---
 description: Weekly automated security analysis to identify vulnerabilities and ensure compliance with security best practices using DailyOps pattern.
 on:
-  schedule: weekly
+  schedule:
+    - cron: '0 0 * * 0'  # weekly on Sunday 00:00 UTC
   workflow_dispatch:
 engine: copilot
 permissions: read-all

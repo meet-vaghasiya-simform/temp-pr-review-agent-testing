@@ -12,7 +12,6 @@ try {
   const raw = localStorage.getItem(STORAGE_KEY)
   if (raw) todos.value = JSON.parse(raw)
 } catch (e) {
-  // ignore parse errors
 }
 
 if (todos.value.length && todos.value.some(t => typeof t.order !== 'number')) {
@@ -71,7 +70,6 @@ function toggleComplete(t: Todo, checked?: boolean) {
 function removeTodo(id: string) { todos.value = todos.value.filter(t=>t.id!==id) }
 function addSubtask(todo: Todo, title: string) { if (!title.trim()) return; todo.subtasks.push({ id: makeId(), title: title.trim(), done: false }) }
 
-// Editing state
 const editingId = ref<string | null>(null)
 const editTitle = ref('')
 const editPriority = ref<Priority>('medium')
@@ -138,7 +136,6 @@ function importTodos(file: File | null) {
         todos.value = items.concat(todos.value)
       }
     } catch (e) {
-      // ignore
     }
   }
   reader.readAsText(file)
@@ -164,7 +161,6 @@ const filtered = computed(() => {
       return (new Date(a.due).getTime() - new Date(b.due).getTime())
     })
   } else {
-    // When not sorting by priority/due, prefer persisted manual order if present
     const hasOrder = list.every(t => typeof t.order === 'number')
     if (hasOrder) {
       list.sort((a,b) => (a.order ?? 0) - (b.order ?? 0))

@@ -1,7 +1,8 @@
 ---
 description: Weekly automated design pattern analysis to suggest architectural improvements based on code business logic.
 on:
-  schedule: weekly
+  schedule:
+    - cron: '0 0 * * 0'  # weekly on Sunday 00:00 UTC
   workflow_dispatch:
 engine: copilot
 permissions: read-all

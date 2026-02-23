@@ -19,10 +19,12 @@ tools:
   github:
     lockdown: false
 
+imports:
+  - ./shared/teams-webhook.md
+  - ./shared/templates/daily-status-template.md
+
 safe-outputs:
-  create-issue:
-    title-prefix: "[daily-report] "
-    labels: [report, daily-activity]
+  teams-notify: {}
 
 engine: copilot
 ---
@@ -157,11 +159,27 @@ Create a well-structured GitHub issue with the following format:
    - Recognize community contributions
    - Suggest priorities
 
-4. **Create the Issue**
-   - Format the report following the structure above
-   - Use the safe-outputs create-issue tool
-   - Ensure the title includes the current date
-   - Add appropriate labels (already configured)
+4. **Send Daily Report to Teams**
+  - Format the report following the structure above
+  - Send the report to Microsoft Teams using the `teams-notify` safe-output and the `daily_status` template
+  - Required fields to include in the payload:
+    - `message_type`: `daily_status`
+    - `plain_summary`: 2-3 sentence summary of the day's activity
+    - `critical_comments`: short list of urgent highlights or blockers (or `No critical issues found.`)
+    - `details`: optional structured object with metrics (issues, prs, commits, etc.)
+  - Example agent output item (the agent should emit an item of type `teams_notify`):
+
+```json
+{
+  "type": "teams_notify",
+  "message_type": "daily_status",
+  "plain_summary": "Quiet day: 2 PRs opened, 1 merged. No major incidents.",
+  "critical_comments": "No critical issues found.",
+  "details": { "issues_opened": 2, "prs_merged": 1, "commits": 5 }
+}
+```
+
+  - The imported `daily_status` template will format the Teams card and post to the configured channel.
 
 ## Special Cases
 

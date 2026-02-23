@@ -1384,7 +1384,18 @@ jobs:
               }
 
               // Construct main text including summary and critical comments
-              const mainText = `Kindly note, **@${prAuthor}** has raised PR #${prNumber} - ${prTitle} targeting **${targetBranch}** branch. Please review.\n\n**Files Changed:** ${filesChanged}\n\n**Summary:** ${plainSummary}\n\n**Critical Comments:** ${criticalComments}`;
+              // Format critical comments: bullets if multiple lines, otherwise a fenced code block
+              let formattedCritical = 'No critical issues found.';
+              if (criticalComments && criticalComments.trim()) {
+                const lines = criticalComments.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+                if (lines.length > 1) {
+                  formattedCritical = lines.map(l => `- ${l}`).join('\n');
+                } else {
+                  formattedCritical = '```\n' + criticalComments.trim() + '\n```';
+                }
+              }
+
+              const mainText = `Kindly note, **@${prAuthor}** has raised PR #${prNumber} - ${prTitle} targeting **${targetBranch}** branch. Please review.\n\n**Files Changed:** ${filesChanged}\n\n**Summary:** ${plainSummary}\n\n**Critical Comments:**\n${formattedCritical}`;
 
               // Construct Teams MessageCard payload
               const payload = {
