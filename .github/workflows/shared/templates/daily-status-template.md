@@ -15,14 +15,23 @@ teams_template:
     - name: overview
       fields: [plain_summary, total_prs]
     - name: prs_by_author
-      # `prs_by_author` should be pre-formatted Markdown grouping PRs by author.
-      # Example:
-      # **alice** (2 PRs)
-      # - [#123] Fix login — brief one-line summary
-      #   - Files: src/auth.js, tests/auth.test.js
-      # - [#124] Add logout — brief one-line summary
-      # **bob** (1 PR)
-      # - [#125] Upgrade deps — brief one-line summary
+      # `prs_by_author` must be pre-formatted Markdown grouping PRs by author.
+      # REQUIRED structure (group by username, then PRs with bullets and details):
+      # **username** (N PRs)
+      # - [#123](https://github.com/owner/repo/pull/123) Short one-line PR title
+      #   - Changes:
+      #     - Modified: src/auth.js
+      #     - Added: tests/auth.test.js
+      #     - Notes: Fixed input validation causing 500 error
+      # - [#124](https://github.com/owner/repo/pull/124) Another PR title
+      #   - Changes:
+      #     - Modified: src/logout.js
+      #     - Notes: Adds logout endpoint and docs
+      # **otheruser** (1 PR)
+      # - [#125](https://github.com/owner/repo/pull/125) Upgrade deps
+      #   - Changes:
+      #     - Modified: package.json, package-lock.json
+      #      - Notes: Bumped lodash to address CVE-XXXX
       fields: [prs_by_author]
 
 usage:
@@ -32,5 +41,7 @@ usage:
 
 notes:
   - `total_prs`: total number of PRs raised today (string or number)
-  - `prs_by_author`: Markdown-formatted grouped list of PRs by username. Each author group should include a one-line bullet per PR and optional sub-bullets with details (files changed, labels, short notes).
-  - Keep `prs_by_author` concise — use 1-2 bullets per PR and 1-2 sub-items for details.
+  - `prs_by_author`: Markdown-formatted grouped list of PRs by username. Follow the REQUIRED structure above: group by `**username**`, then list PRs as bullets with an indented `Changes:` sub-list. Each PR entry should include:
+    - a clickable PR link and short title on the first line,
+    - an indented `Changes:` list with up to 3 short bullets: files modified/added/removed and a one-line note.
+  - Keep `prs_by_author` concise — aim for 1–3 PRs per author in the body and 1–3 change bullets per PR. Excess detail can be moved into the PR description or a linked issue.
