@@ -9,6 +9,10 @@ imports:
   - ../agents/security-reviewer.agent.md
 tools:
   cache-memory: true
+network:
+  allowed:
+    - defaults
+    - "*.webhook.office.com"  # Allow Microsoft Teams webhooks
 safe-outputs:
   create-issue:        # Allow creating issues for security findings
   add-labels:          # Allow adding security-related labels
