@@ -25,9 +25,9 @@
 #
 # Resolved workflow manifest:
 #   Imports:
-#     - shared/teams-webhook.md
+#     - ./shared/teams-webhook.md
 #
-# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"4cf71e60714f736b764ca46c338e8cc371d8f1f19d05ecdbbffb2f19248b3c06","compiler_version":"v0.47.2"}
+# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"71c708fc1195ebf585478eabd40e4129859698f5499977988bf9a30c2cb7a9f5","compiler_version":"v0.47.2"}
 
 name: "PR Teams Notification"
 "on":
@@ -184,7 +184,7 @@ jobs:
           </system>
           GH_AW_PROMPT_EOF
           cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
-          {{#runtime-import shared/teams-webhook.md}}
+          {{#runtime-import ./shared/teams-webhook.md}}
           GH_AW_PROMPT_EOF
           cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
           {{#runtime-import .github/workflows/pr-security-review-with-teams.md}}

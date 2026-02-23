@@ -9,7 +9,7 @@ on:
 engine: copilot
 permissions: read-all
 imports:
-  - shared/teams-webhook.md
+  - ./shared/teams-webhook.md
 ---
 
 # PR Teams Notification
