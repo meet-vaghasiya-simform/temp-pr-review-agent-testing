@@ -10,6 +10,7 @@ engine: copilot
 permissions: read-all
 imports:
   - ../agents/pr-reviewer.agent.md
+  - ./shared/teams-webhook.md
 
 safe-outputs:
   add-comment:        # Allow adding comments to PRs/commits
@@ -64,4 +65,19 @@ Brief overview of the changes (2-3 sentences)
 - If PR targets `main` branch, add `main` label
 - Add additional relevant labels based on the review (security, performance, etc.)
 
-Perform these tasks in addition to the code review analysis.
+### Microsoft Teams Notification
+After completing the code review and PR management tasks, send a notification to Microsoft Teams to inform the team about the new PR.
+
+Use the `teams-notify` safe-output with the following information:
+- **pr_number**: The pull request number
+- **pr_title**: The updated/standardized PR title
+- **pr_author**: The GitHub username who created the PR
+- **target_branch**: The branch being targeted (develop or main)
+- **pr_url**: The full URL to the pull request
+- **files_changed**: The number of files changed in the PR
+
+The Teams notification will automatically format a message card with all PR details and a direct link for team members to review.
+
+**Note**: If this workflow is triggered by a push event (not a PR), skip the Teams notification as it's only relevant for pull requests.
+
+Perform all these tasks in addition to the code review analysis.

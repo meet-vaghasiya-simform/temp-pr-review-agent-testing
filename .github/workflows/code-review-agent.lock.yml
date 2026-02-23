@@ -25,8 +25,9 @@
 # Resolved workflow manifest:
 #   Imports:
 #     - ../agents/pr-reviewer.agent.md
+#     - ./shared/teams-webhook.md
 #
-# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"c25a697bbf6497135704010ae067ab97bc43ff04e3d5b06fcd699b4bdabc306c","compiler_version":"v0.47.2"}
+# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"837832fa55a52c53adcae3d4e13b35f56cc8edbaec49237dd0f284144cedfebd","compiler_version":"v0.47.2"}
 
 name: "Code Review Agent - Automatic PR Analyzer"
 "on":
@@ -185,6 +186,9 @@ jobs:
           GH_AW_PROMPT_EOF
           cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
           {{#runtime-import ../agents/pr-reviewer.agent.md}}
+          GH_AW_PROMPT_EOF
+          cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
+          {{#runtime-import ./shared/teams-webhook.md}}
           GH_AW_PROMPT_EOF
           cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
           {{#runtime-import .github/workflows/code-review-agent.md}}
@@ -380,7 +384,7 @@ jobs:
           mkdir -p /tmp/gh-aw/safeoutputs
           mkdir -p /tmp/gh-aw/mcp-logs/safeoutputs
           cat > /opt/gh-aw/safeoutputs/config.json << 'GH_AW_SAFE_OUTPUTS_CONFIG_EOF'
-          {"add_comment":{"max":1},"add_labels":{"max":3},"create_issue":{"max":1},"missing_data":{},"missing_tool":{},"noop":{"max":1},"update_pull_request":{"max":1}}
+          {"add_comment":{"max":1},"add_labels":{"max":3},"create_issue":{"max":1},"missing_data":{},"missing_tool":{},"noop":{"max":1},"teams-notify":{"description":"Send notification to Microsoft Teams channel","inputs":{"files_changed":{"default":null,"description":"Number of files changed","required":false,"type":"string"},"pr_author":{"default":null,"description":"Pull request author username","required":true,"type":"string"},"pr_number":{"default":null,"description":"Pull request number","required":true,"type":"string"},"pr_title":{"default":null,"description":"Pull request title","required":true,"type":"string"},"pr_url":{"default":null,"description":"Full URL to the pull request","required":true,"type":"string"},"target_branch":{"default":null,"description":"Target branch (develop/main)","required":true,"type":"string"}},"output":"Teams notification sent successfully!"},"update_pull_request":{"max":1}}
           GH_AW_SAFE_OUTPUTS_CONFIG_EOF
           cat > /opt/gh-aw/safeoutputs/tools.json << 'GH_AW_SAFE_OUTPUTS_TOOLS_EOF'
           [
@@ -569,6 +573,47 @@ jobs:
                 "type": "object"
               },
               "name": "missing_data"
+            },
+            {
+              "description": "Send notification to Microsoft Teams channel",
+              "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                  "files_changed": {
+                    "description": "Number of files changed",
+                    "type": "string"
+                  },
+                  "pr_author": {
+                    "description": "Pull request author username",
+                    "type": "string"
+                  },
+                  "pr_number": {
+                    "description": "Pull request number",
+                    "type": "string"
+                  },
+                  "pr_title": {
+                    "description": "Pull request title",
+                    "type": "string"
+                  },
+                  "pr_url": {
+                    "description": "Full URL to the pull request",
+                    "type": "string"
+                  },
+                  "target_branch": {
+                    "description": "Target branch (develop/main)",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "pr_author",
+                  "pr_number",
+                  "pr_title",
+                  "pr_url",
+                  "target_branch"
+                ],
+                "type": "object"
+              },
+              "name": "teams_notify"
             }
           ]
           GH_AW_SAFE_OUTPUTS_TOOLS_EOF
@@ -968,6 +1013,7 @@ jobs:
       - agent
       - detection
       - safe_outputs
+      - teams_notify
     if: (always()) && (needs.agent.result != 'skipped')
     runs-on: ubuntu-slim
     permissions:
@@ -1238,4 +1284,122 @@ jobs:
           name: safe-output-items
           path: /tmp/safe-output-items.jsonl
           if-no-files-found: warn
+
+  teams_notify:
+    needs:
+      - agent
+      - detection
+    if: ((!cancelled()) && (needs.agent.result != 'skipped')) && (contains(needs.agent.outputs.output_types, 'teams_notify'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Download agent output artifact
+        continue-on-error: true
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6
+        with:
+          name: agent-output
+          path: /opt/gh-aw/safe-jobs/
+      - name: Setup Safe Job Environment Variables
+        run: |
+          find "/opt/gh-aw/safe-jobs/" -type f -print
+          echo "GH_AW_AGENT_OUTPUT=/opt/gh-aw/safe-jobs/agent_output.json" >> "$GITHUB_ENV"
+      - name: Send Teams notification
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+        with:
+          script: |
+            const fs = require('fs');
+            const webhookUrl = process.env.TEAMS_WEBHOOK_URL;
+            const outputFile = process.env.GH_AW_AGENT_OUTPUT;
+
+            // Validate webhook URL
+            if (!webhookUrl) {
+              core.setFailed('TEAMS_WEBHOOK_URL secret is not configured');
+              return;
+            }
+
+            // Check if running in staged mode
+            if (process.env.GH_AW_SAFE_OUTPUTS_STAGED === 'true') {
+              core.info('📋 Staged mode: Would send Teams notification');
+              await core.summary.addRaw('## Preview\n\nWould send Teams notification for PR').write();
+              return;
+            }
+
+            // Read agent output
+            if (!outputFile) {
+              core.info('No GH_AW_AGENT_OUTPUT found');
+              return;
+            }
+
+            const fileContent = fs.readFileSync(outputFile, 'utf8');
+            const agentOutput = JSON.parse(fileContent);
+
+            // Filter for teams-notify items (job name with dashes → underscores)
+            const items = agentOutput.items.filter(item => item.type === 'teams_notify');
+
+            if (items.length === 0) {
+              core.info('No teams_notify items found in agent output');
+              return;
+            }
+
+            // Process each notification
+            for (const item of items) {
+              const prNumber = item.pr_number || 'Unknown';
+              const prTitle = item.pr_title || 'No title';
+              const prAuthor = item.pr_author || 'Unknown';
+              const targetBranch = item.target_branch || 'Unknown';
+              const prUrl = item.pr_url || '';
+              const filesChanged = item.files_changed || '0';
+
+              core.info(`Sending Teams notification for PR #${prNumber}`);
+
+              // Construct Teams MessageCard payload
+              const payload = {
+                "@type": "MessageCard",
+                "@context": "http://schema.org/extensions",
+                "themeColor": "0078d4",
+                "summary": "Pull Request Raised",
+                "sections": [{
+                  "activityTitle": "Pull Request Raised",
+                  "activitySubtitle": "[Auto-generated message]",
+                  "activityImage": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+                  "text": `Kindly note, **@${prAuthor}** has raised PR #${prNumber} - ${prTitle} targeting **${targetBranch}** branch. Please review.\n\n**Files Changed:** ${filesChanged}`,
+                  "markdown": true
+                }],
+                "potentialAction": [{
+                  "@type": "OpenUri",
+                  "name": "View Pull Request",
+                  "targets": [{
+                    "os": "default",
+                    "uri": prUrl
+                  }]
+                }]
+              };
+
+              // Send to Teams webhook
+              try {
+                const response = await fetch(webhookUrl, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                  const errorText = await response.text();
+                  core.setFailed(`Teams webhook failed (${response.status}): ${errorText}`);
+                  return;
+                }
+
+                core.info('✅ Teams notification sent successfully');
+                core.info(`PR #${prNumber} notification delivered`);
+
+              } catch (error) {
+                core.setFailed(`Failed to send Teams notification: ${error.message}`);
+                return;
+              }
+            }
 
