@@ -33,6 +33,18 @@ safe-outputs:
           description: "Number of files changed"
           required: false
           type: string
+        message_type:
+          description: "Template type for Teams message (pr_review|security|daily_status)"
+          required: false
+          type: string
+        plain_summary:
+          description: "Plain-language 2-3 sentence summary to show in the message"
+          required: false
+          type: string
+        critical_comments:
+          description: "Critical reviewer comments or 'No critical issues found.'"
+          required: false
+          type: string
       steps:
         - name: Send Teams notification
           uses: actions/github-script@v7
@@ -82,20 +94,41 @@ safe-outputs:
                 const targetBranch = item.target_branch || 'Unknown';
                 const prUrl = item.pr_url || '';
                 const filesChanged = item.files_changed || '0';
-                
-                core.info(`Sending Teams notification for PR #${prNumber}`);
-                
+                const messageType = (item.message_type || 'pr_review').toLowerCase();
+                const plainSummary = item.plain_summary || '';
+                const criticalComments = item.critical_comments || 'No critical issues found.';
+
+                core.info(`Sending Teams notification for PR #${prNumber} (type=${messageType})`);
+
+                // Choose theme and titles based on message type
+                let themeColor = '0078d4';
+                let activityTitle = 'Pull Request Raised';
+                let summaryText = 'Pull Request Raised';
+
+                if (messageType === 'security') {
+                  themeColor = 'd33d3d';
+                  activityTitle = 'Security Report';
+                  summaryText = 'Security Scan Results';
+                } else if (messageType === 'daily_status') {
+                  themeColor = '28a745';
+                  activityTitle = 'Daily Status Update';
+                  summaryText = 'Daily Status';
+                }
+
+                // Construct main text including summary and critical comments
+                const mainText = `Kindly note, **@${prAuthor}** has raised PR #${prNumber} - ${prTitle} targeting **${targetBranch}** branch. Please review.\n\n**Files Changed:** ${filesChanged}\n\n**Summary:** ${plainSummary}\n\n**Critical Comments:** ${criticalComments}`;
+
                 // Construct Teams MessageCard payload
                 const payload = {
                   "@type": "MessageCard",
                   "@context": "http://schema.org/extensions",
-                  "themeColor": "0078d4",
-                  "summary": "Pull Request Raised",
+                  "themeColor": themeColor,
+                  "summary": summaryText,
                   "sections": [{
-                    "activityTitle": "Pull Request Raised",
+                    "activityTitle": activityTitle,
                     "activitySubtitle": "[Auto-generated message]",
                     "activityImage": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-                    "text": `Kindly note, **@${prAuthor}** has raised PR #${prNumber} - ${prTitle} targeting **${targetBranch}** branch. Please review.\n\n**Files Changed:** ${filesChanged}`,
+                    "text": mainText,
                     "markdown": true
                   }],
                   "potentialAction": [{
@@ -107,7 +140,7 @@ safe-outputs:
                     }]
                   }]
                 };
-                
+
                 // Send to Teams webhook
                 try {
                   const response = await fetch(webhookUrl, {
@@ -117,16 +150,16 @@ safe-outputs:
                     },
                     body: JSON.stringify(payload)
                   });
-                  
+
                   if (!response.ok) {
                     const errorText = await response.text();
                     core.setFailed(`Teams webhook failed (${response.status}): ${errorText}`);
                     return;
                   }
-                  
+
                   core.info('✅ Teams notification sent successfully');
                   core.info(`PR #${prNumber} notification delivered`);
-                  
+
                 } catch (error) {
                   core.setFailed(`Failed to send Teams notification: ${error.message}`);
                   return;
