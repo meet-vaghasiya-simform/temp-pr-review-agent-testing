@@ -25,7 +25,12 @@
 # repository activity including issues, pull requests, commits, discussions,
 # and releases to generate comprehensive daily reports delivered as GitHub issues.
 #
-# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"d8f3dfdde28311850652467f34acaa1ada24dd399fa16ffdca12a0598615ab2d","compiler_version":"v0.47.2"}
+# Resolved workflow manifest:
+#   Imports:
+#     - ./shared/teams-webhook.md
+#     - ./shared/templates/daily-status-template.md
+#
+# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"047cdc6776668ae949469d076ac58b2f304655f7d2734310407017f1f16cc094","compiler_version":"v0.47.2"}
 
 name: "Daily Repository Activity Report"
 "on":
@@ -160,6 +165,12 @@ jobs:
           GH_AW_PROMPT_EOF
           cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
           </system>
+          GH_AW_PROMPT_EOF
+          cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
+          {{#runtime-import ./shared/teams-webhook.md}}
+          GH_AW_PROMPT_EOF
+          cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
+          {{#runtime-import ./shared/templates/daily-status-template.md}}
           GH_AW_PROMPT_EOF
           cat << 'GH_AW_PROMPT_EOF' >> "$GH_AW_PROMPT"
           {{#runtime-import .github/workflows/daily-activity-report.md}}
@@ -350,51 +361,10 @@ jobs:
           mkdir -p /tmp/gh-aw/safeoutputs
           mkdir -p /tmp/gh-aw/mcp-logs/safeoutputs
           cat > /opt/gh-aw/safeoutputs/config.json << 'GH_AW_SAFE_OUTPUTS_CONFIG_EOF'
-          {"create_issue":{"max":1},"missing_data":{},"missing_tool":{},"noop":{"max":1}}
+          {"missing_data":{},"missing_tool":{},"noop":{"max":1},"teams-notify":{"description":"Send notification to Microsoft Teams channel","inputs":{"critical_comments":{"default":null,"description":"Critical reviewer comments or 'No critical issues found.'","required":false,"type":"string"},"files_changed":{"default":null,"description":"Number of files changed","required":false,"type":"string"},"message_type":{"default":null,"description":"Template type for Teams message (pr_review|security|daily_status)","required":false,"type":"string"},"plain_summary":{"default":null,"description":"Plain-language 2-3 sentence summary to show in the message","required":false,"type":"string"},"pr_author":{"default":null,"description":"Pull request author username","required":true,"type":"string"},"pr_number":{"default":null,"description":"Pull request number","required":true,"type":"string"},"pr_title":{"default":null,"description":"Pull request title","required":true,"type":"string"},"pr_url":{"default":null,"description":"Full URL to the pull request","required":true,"type":"string"},"target_branch":{"default":null,"description":"Target branch (develop/main)","required":true,"type":"string"}},"output":"Teams notification sent successfully!"}}
           GH_AW_SAFE_OUTPUTS_CONFIG_EOF
           cat > /opt/gh-aw/safeoutputs/tools.json << 'GH_AW_SAFE_OUTPUTS_TOOLS_EOF'
           [
-            {
-              "description": "Create a new GitHub issue for tracking bugs, feature requests, or tasks. Use this for actionable work items that need assignment, labeling, and status tracking. For reports, announcements, or status updates that don't require task tracking, use create_discussion instead. CONSTRAINTS: Maximum 1 issue(s) can be created. Title will be prefixed with \"[daily-report] \". Labels [report daily-activity] will be automatically added.",
-              "inputSchema": {
-                "additionalProperties": false,
-                "properties": {
-                  "body": {
-                    "description": "Detailed issue description in Markdown. Do NOT repeat the title as a heading since it already appears as the issue's h1. Include context, reproduction steps, or acceptance criteria as appropriate.",
-                    "type": "string"
-                  },
-                  "labels": {
-                    "description": "Labels to categorize the issue (e.g., 'bug', 'enhancement'). Labels must exist in the repository.",
-                    "items": {
-                      "type": "string"
-                    },
-                    "type": "array"
-                  },
-                  "parent": {
-                    "description": "Parent issue number for creating sub-issues. This is the numeric ID from the GitHub URL (e.g., 42 in github.com/owner/repo/issues/42). Can also be a temporary_id (e.g., 'aw_abc123', 'aw_Test123') from a previously created issue in the same workflow run.",
-                    "type": [
-                      "number",
-                      "string"
-                    ]
-                  },
-                  "temporary_id": {
-                    "description": "Unique temporary identifier for referencing this issue before it's created. Format: 'aw_' followed by 3 to 8 alphanumeric characters (e.g., 'aw_abc1', 'aw_Test123'). Use '#aw_ID' in body text to reference other issues by their temporary_id; these are replaced with actual issue numbers after creation.",
-                    "pattern": "^aw_[A-Za-z0-9]{3,8}$",
-                    "type": "string"
-                  },
-                  "title": {
-                    "description": "Concise issue title summarizing the bug, feature, or task. The title appears as the main heading, so keep it brief and descriptive.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "title",
-                  "body"
-                ],
-                "type": "object"
-              },
-              "name": "create_issue"
-            },
             {
               "description": "Report that a tool or capability needed to complete the task is not available, or share any information you deem important about missing functionality or limitations. Use this when you cannot accomplish what was requested because the required functionality is missing or access is restricted.",
               "inputSchema": {
@@ -463,44 +433,64 @@ jobs:
                 "type": "object"
               },
               "name": "missing_data"
+            },
+            {
+              "description": "Send notification to Microsoft Teams channel",
+              "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                  "critical_comments": {
+                    "description": "Critical reviewer comments or 'No critical issues found.'",
+                    "type": "string"
+                  },
+                  "files_changed": {
+                    "description": "Number of files changed",
+                    "type": "string"
+                  },
+                  "message_type": {
+                    "description": "Template type for Teams message (pr_review|security|daily_status)",
+                    "type": "string"
+                  },
+                  "plain_summary": {
+                    "description": "Plain-language 2-3 sentence summary to show in the message",
+                    "type": "string"
+                  },
+                  "pr_author": {
+                    "description": "Pull request author username",
+                    "type": "string"
+                  },
+                  "pr_number": {
+                    "description": "Pull request number",
+                    "type": "string"
+                  },
+                  "pr_title": {
+                    "description": "Pull request title",
+                    "type": "string"
+                  },
+                  "pr_url": {
+                    "description": "Full URL to the pull request",
+                    "type": "string"
+                  },
+                  "target_branch": {
+                    "description": "Target branch (develop/main)",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "pr_author",
+                  "pr_number",
+                  "pr_title",
+                  "pr_url",
+                  "target_branch"
+                ],
+                "type": "object"
+              },
+              "name": "teams_notify"
             }
           ]
           GH_AW_SAFE_OUTPUTS_TOOLS_EOF
           cat > /opt/gh-aw/safeoutputs/validation.json << 'GH_AW_SAFE_OUTPUTS_VALIDATION_EOF'
           {
-            "create_issue": {
-              "defaultMax": 1,
-              "fields": {
-                "body": {
-                  "required": true,
-                  "type": "string",
-                  "sanitize": true,
-                  "maxLength": 65000
-                },
-                "labels": {
-                  "type": "array",
-                  "itemType": "string",
-                  "itemSanitize": true,
-                  "itemMaxLength": 128
-                },
-                "parent": {
-                  "issueOrPRNumber": true
-                },
-                "repo": {
-                  "type": "string",
-                  "maxLength": 256
-                },
-                "temporary_id": {
-                  "type": "string"
-                },
-                "title": {
-                  "required": true,
-                  "type": "string",
-                  "sanitize": true,
-                  "maxLength": 128
-                }
-              }
-            },
             "missing_tool": {
               "defaultMax": 20,
               "fields": {
@@ -804,11 +794,9 @@ jobs:
       - agent
       - detection
       - safe_outputs
+      - teams_notify
     if: (always()) && (needs.agent.result != 'skipped')
     runs-on: ubuntu-slim
-    permissions:
-      contents: read
-      issues: write
     outputs:
       noop_message: ${{ steps.noop.outputs.noop_message }}
       tools_reported: ${{ steps.missing_tool.outputs.tools_reported }}
@@ -1000,9 +988,6 @@ jobs:
       - detection
     if: ((!cancelled()) && (needs.agent.result != 'skipped')) && (needs.detection.outputs.success == 'true')
     runs-on: ubuntu-slim
-    permissions:
-      contents: read
-      issues: write
     timeout-minutes: 15
     env:
       GH_AW_ENGINE_ID: "copilot"
@@ -1034,7 +1019,7 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
-          GH_AW_SAFE_OUTPUTS_HANDLER_CONFIG: "{\"create_issue\":{\"labels\":[\"report\",\"daily-activity\"],\"max\":1,\"title_prefix\":\"[daily-report] \"},\"missing_data\":{},\"missing_tool\":{}}"
+          GH_AW_SAFE_OUTPUTS_HANDLER_CONFIG: "{\"missing_data\":{},\"missing_tool\":{}}"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
@@ -1049,4 +1034,182 @@ jobs:
           name: safe-output-items
           path: /tmp/safe-output-items.jsonl
           if-no-files-found: warn
+
+  teams_notify:
+    needs:
+      - agent
+      - detection
+    if: ((!cancelled()) && (needs.agent.result != 'skipped')) && (contains(needs.agent.outputs.output_types, 'teams_notify'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Download agent output artifact
+        continue-on-error: true
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6
+        with:
+          name: agent-output
+          path: /opt/gh-aw/safe-jobs/
+      - name: Setup Safe Job Environment Variables
+        run: |
+          find "/opt/gh-aw/safe-jobs/" -type f -print
+          echo "GH_AW_AGENT_OUTPUT=/opt/gh-aw/safe-jobs/agent_output.json" >> "$GITHUB_ENV"
+      - name: Send Teams notification
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+        with:
+          script: |
+            const fs = require('fs');
+            const webhookUrl = process.env.TEAMS_WEBHOOK_URL;
+            const outputFile = process.env.GH_AW_AGENT_OUTPUT;
+
+            // Validate webhook URL
+            if (!webhookUrl) {
+              core.setFailed('TEAMS_WEBHOOK_URL secret is not configured');
+              return;
+            }
+
+            // Check if running in staged mode
+            if (process.env.GH_AW_SAFE_OUTPUTS_STAGED === 'true') {
+              core.info('📋 Staged mode: Would send Teams notification');
+              await core.summary.addRaw('## Preview\n\nWould send Teams notification for PR').write();
+              return;
+            }
+
+            // Read agent output
+            if (!outputFile) {
+              core.info('No GH_AW_AGENT_OUTPUT found');
+              return;
+            }
+
+            const fileContent = fs.readFileSync(outputFile, 'utf8');
+            const agentOutput = JSON.parse(fileContent);
+
+            // Filter for teams-notify items (job name with dashes → underscores)
+            const items = agentOutput.items.filter(item => item.type === 'teams_notify');
+
+            if (items.length === 0) {
+              core.info('No teams_notify items found in agent output');
+              return;
+            }
+
+            // Process each notification
+            for (const item of items) {
+              const prNumber = item.pr_number || 'Unknown';
+              const prTitle = item.pr_title || 'No title';
+              const prAuthor = item.pr_author || 'Unknown';
+              const targetBranch = item.target_branch || 'Unknown';
+              const prUrl = item.pr_url || '';
+              const filesChanged = item.files_changed || '0';
+              const messageType = (item.message_type || 'pr_review').toLowerCase();
+              const plainSummary = item.plain_summary || '';
+              const criticalComments = item.critical_comments || 'No critical issues found.';
+
+              core.info(`Sending Teams notification for PR #${prNumber} (type=${messageType})`);
+
+              // Build payload using templates per message type for scalability
+              const templates = {
+                pr_review: {
+                  themeColor: '0078d4',
+                  summary: 'Pull Request Raised',
+                  activityTitle: 'Pull Request Raised',
+                  buildSections: (it) => {
+                    // Use formatted critical comments (normalize bullets)
+                    let formattedCritical = 'No critical issues found.';
+                    if (criticalComments && criticalComments.trim()) {
+                      const lines = criticalComments.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+                      if (lines.length > 1) {
+                        const normalized = lines.map(l => l.replace(/^[\-\*•\s]+/, '').trim()).filter(Boolean);
+                        if (normalized.length > 0) formattedCritical = normalized.map(l => `- ${l}`).join('\n');
+                      } else {
+                        formattedCritical = '```\n' + criticalComments.trim() + '\n```';
+                      }
+                    }
+
+                    const header = `**@${prAuthor}** opened PR [#${prNumber}](${prUrl}) - **${prTitle}**`;
+                    const details = `**Files Changed:** ${filesChanged}\n\n**Summary:** ${plainSummary}`;
+                    const criticalBlock = `**Critical Comments:**\n${formattedCritical}`;
+
+                    return [{
+                      activityTitle: templates.pr_review.activityTitle,
+                      activitySubtitle: '[Auto-generated message]',
+                      activityImage: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+                      text: `${header}\n\n${details}\n\n${criticalBlock}`,
+                      markdown: true
+                    }];
+                  }
+                },
+                security: {
+                  themeColor: 'd33d3d',
+                  summary: 'Security Scan Results',
+                  activityTitle: 'Security Report',
+                  buildSections: (it) => [{
+                    activityTitle: 'Security Report',
+                    activitySubtitle: '[Auto-generated message]',
+                    activityImage: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+                    text: `**Summary:** ${plainSummary}\n\n**Details:**\n${criticalComments || 'No critical issues found.'}`,
+                    markdown: true
+                  }]
+                },
+                daily_status: {
+                  themeColor: '28a745',
+                  summary: 'Daily Status',
+                  activityTitle: 'Daily Status Update',
+                  buildSections: (it) => {
+                    const total = it.total_prs || '0';
+                    const prsByAuthor = it.prs_by_author || item.prs_by_author || '';
+                    const summaryText = plainSummary || '';
+                    const text = `**Summary:** ${summaryText}\n\n**Total PRs:** ${total}\n\n${prsByAuthor}`.trim();
+                    return [{
+                      activityTitle: 'Daily Status Update',
+                      activitySubtitle: '[Auto-generated message]',
+                      activityImage: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+                      text,
+                      markdown: true
+                    }];
+                  }
+                }
+              };
+
+              const tpl = templates[messageType] || templates.pr_review;
+              const sections = tpl.buildSections(item);
+
+              const payload = {
+                '@type': 'MessageCard',
+                '@context': 'http://schema.org/extensions',
+                themeColor: tpl.themeColor,
+                summary: tpl.summary,
+                sections,
+                potentialAction: [{
+                  '@type': 'OpenUri',
+                  name: 'View Pull Request',
+                  targets: [{ os: 'default', uri: prUrl }]
+                }]
+              };
+
+              // Send to Teams webhook
+              try {
+                const response = await fetch(webhookUrl, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                  const errorText = await response.text();
+                  core.setFailed(`Teams webhook failed (${response.status}): ${errorText}`);
+                  return;
+                }
+
+                core.info('✅ Teams notification sent successfully');
+                core.info(`PR #${prNumber} notification delivered`);
+
+              } catch (error) {
+                core.setFailed(`Failed to send Teams notification: ${error.message}`);
+                return;
+              }
+            }
 

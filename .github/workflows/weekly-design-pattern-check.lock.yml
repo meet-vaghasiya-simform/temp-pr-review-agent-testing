@@ -27,13 +27,12 @@
 #   Imports:
 #     - ../agents/design-pattern-suggester.agent.md
 #
-# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"7c71a02ed7bb644ade2b40d1518737a96e65b1d309784546ce7c523b8b2202d8","compiler_version":"v0.47.2"}
+# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"b5a045153afb15871713fe4a9828051d350b943f1295a131edffeebed03b32ab","compiler_version":"v0.47.2"}
 
 name: "Weekly Design Pattern Check - Automated Architectural Analysis"
 "on":
   schedule:
-  - cron: "7 10 * * 6"
-    # Friendly format: weekly (scattered)
+  - cron: "0 0 * * 0"
   workflow_dispatch:
 
 permissions: {}

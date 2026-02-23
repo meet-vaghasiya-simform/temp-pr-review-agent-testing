@@ -100,44 +100,83 @@ safe-outputs:
 
                 core.info(`Sending Teams notification for PR #${prNumber} (type=${messageType})`);
 
-                // Choose theme and titles based on message type
-                let themeColor = '0078d4';
-                let activityTitle = 'Pull Request Raised';
-                let summaryText = 'Pull Request Raised';
+                // Build payload using templates per message type for scalability
+                const templates = {
+                  pr_review: {
+                    themeColor: '0078d4',
+                    summary: 'Pull Request Raised',
+                    activityTitle: 'Pull Request Raised',
+                    buildSections: (it) => {
+                      // Use formatted critical comments (normalize bullets)
+                      let formattedCritical = 'No critical issues found.';
+                      if (criticalComments && criticalComments.trim()) {
+                        const lines = criticalComments.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+                        if (lines.length > 1) {
+                          const normalized = lines.map(l => l.replace(/^[\-\*•\s]+/, '').trim()).filter(Boolean);
+                          if (normalized.length > 0) formattedCritical = normalized.map(l => `- ${l}`).join('\n');
+                        } else {
+                          formattedCritical = '```\n' + criticalComments.trim() + '\n```';
+                        }
+                      }
 
-                if (messageType === 'security') {
-                  themeColor = 'd33d3d';
-                  activityTitle = 'Security Report';
-                  summaryText = 'Security Scan Results';
-                } else if (messageType === 'daily_status') {
-                  themeColor = '28a745';
-                  activityTitle = 'Daily Status Update';
-                  summaryText = 'Daily Status';
-                }
+                      const header = `**@${prAuthor}** opened PR [#${prNumber}](${prUrl}) - **${prTitle}**`;
+                      const details = `**Files Changed:** ${filesChanged}\n\n**Summary:** ${plainSummary}`;
+                      const criticalBlock = `**Critical Comments:**\n${formattedCritical}`;
 
-                // Construct main text including summary and critical comments
-                const mainText = `Kindly note, **@${prAuthor}** has raised PR #${prNumber} - ${prTitle} targeting **${targetBranch}** branch. Please review.\n\n**Files Changed:** ${filesChanged}\n\n**Summary:** ${plainSummary}\n\n**Critical Comments:** ${criticalComments}`;
-
-                // Construct Teams MessageCard payload
-                const payload = {
-                  "@type": "MessageCard",
-                  "@context": "http://schema.org/extensions",
-                  "themeColor": themeColor,
-                  "summary": summaryText,
-                  "sections": [{
-                    "activityTitle": activityTitle,
-                    "activitySubtitle": "[Auto-generated message]",
-                    "activityImage": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-                    "text": mainText,
-                    "markdown": true
-                  }],
-                  "potentialAction": [{
-                    "@type": "OpenUri",
-                    "name": "View Pull Request",
-                    "targets": [{
-                      "os": "default",
-                      "uri": prUrl
+                      return [{
+                        activityTitle: templates.pr_review.activityTitle,
+                        activitySubtitle: '[Auto-generated message]',
+                        activityImage: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+                        text: `${header}\n\n${details}\n\n${criticalBlock}`,
+                        markdown: true
+                      }];
+                    }
+                  },
+                  security: {
+                    themeColor: 'd33d3d',
+                    summary: 'Security Scan Results',
+                    activityTitle: 'Security Report',
+                    buildSections: (it) => [{
+                      activityTitle: 'Security Report',
+                      activitySubtitle: '[Auto-generated message]',
+                      activityImage: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+                      text: `**Summary:** ${plainSummary}\n\n**Details:**\n${criticalComments || 'No critical issues found.'}`,
+                      markdown: true
                     }]
+                  },
+                  daily_status: {
+                    themeColor: '28a745',
+                    summary: 'Daily Status',
+                    activityTitle: 'Daily Status Update',
+                    buildSections: (it) => {
+                      const total = it.total_prs || '0';
+                      const prsByAuthor = it.prs_by_author || item.prs_by_author || '';
+                      const summaryText = plainSummary || '';
+                      const text = `**Summary:** ${summaryText}\n\n**Total PRs:** ${total}\n\n${prsByAuthor}`.trim();
+                      return [{
+                        activityTitle: 'Daily Status Update',
+                        activitySubtitle: '[Auto-generated message]',
+                        activityImage: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+                        text,
+                        markdown: true
+                      }];
+                    }
+                  }
+                };
+
+                const tpl = templates[messageType] || templates.pr_review;
+                const sections = tpl.buildSections(item);
+
+                const payload = {
+                  '@type': 'MessageCard',
+                  '@context': 'http://schema.org/extensions',
+                  themeColor: tpl.themeColor,
+                  summary: tpl.summary,
+                  sections,
+                  potentialAction: [{
+                    '@type': 'OpenUri',
+                    name: 'View Pull Request',
+                    targets: [{ os: 'default', uri: prUrl }]
                   }]
                 };
 

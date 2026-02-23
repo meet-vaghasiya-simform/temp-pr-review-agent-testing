@@ -23,9 +23,6 @@ imports:
   - ./shared/teams-webhook.md
   - ./shared/templates/daily-status-template.md
 
-safe-outputs:
-  teams-notify: {}
-
 engine: copilot
 ---
 
@@ -162,9 +159,11 @@ Create a well-structured GitHub issue with the following format:
 4. **Send Daily Report to Teams**
   - Format the report following the structure above
   - Send the report to Microsoft Teams using the `teams-notify` safe-output and the `daily_status` template
-  - Required fields to include in the payload:
+  - Required fields to include in the payload (recommended):
     - `message_type`: `daily_status`
     - `plain_summary`: 2-3 sentence summary of the day's activity
+    - `total_prs`: total number of PRs raised today (number or string)
+    - `prs_by_author`: Markdown-formatted grouped list of PRs by username (see example below)
     - `critical_comments`: short list of urgent highlights or blockers (or `No critical issues found.`)
     - `details`: optional structured object with metrics (issues, prs, commits, etc.)
   - Example agent output item (the agent should emit an item of type `teams_notify`):
@@ -173,13 +172,15 @@ Create a well-structured GitHub issue with the following format:
 {
   "type": "teams_notify",
   "message_type": "daily_status",
-  "plain_summary": "Quiet day: 2 PRs opened, 1 merged. No major incidents.",
-  "critical_comments": "No critical issues found.",
-  "details": { "issues_opened": 2, "prs_merged": 1, "commits": 5 }
+  "plain_summary": "Moderate activity: 5 PRs opened, 2 merged. One PR needs urgent review.",
+  "total_prs": 5,
+  "prs_by_author": "**alice** (2 PRs)\n- [#423] Fix login validation — prevents 500 on empty input\n  - Files: src/auth.js, tests/auth.test.js\n- [#424] Add logout endpoint — short description\n**bob** (1 PR)\n- [#425] Upgrade deps — bump lodash and axios\n**carol** (2 PRs)\n- [#426] Improve caching — reduces DB load\n- [#427] Update docs — API examples",
+  "critical_comments": "- PR #426: Potential performance regression in cache layer\n- PR #423: Failing unit tests on CI",
+  "details": { "issues_opened": 1, "prs_opened": 5, "prs_merged": 2, "commits": 12 }
 }
 ```
 
-  - The imported `daily_status` template will format the Teams card and post to the configured channel.
+  - The imported `daily_status` template will format the Teams card and post to the configured channel. Ensure the agent populates `prs_by_author` as concise Markdown (1-2 bullets per PR plus optional 1-2 detail sub-bullets) so messages remain readable.
 
 ## Special Cases
 

@@ -27,13 +27,12 @@
 #   Imports:
 #     - ../agents/security-reviewer.agent.md
 #
-# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"ea75dcfb90e904dc1d3338706c99a1f69a4c419941cfe69987b438e54921e73b","compiler_version":"v0.47.2"}
+# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"edf3e55e48b1a143bafd796aa1871ed2d6d6c95d89f53157ea08ed797f20a5e5","compiler_version":"v0.47.2"}
 
 name: "Weekly Security Check - Automated Security Analysis"
 "on":
   schedule:
-  - cron: "58 2 * * 4"
-    # Friendly format: weekly (scattered)
+  - cron: "0 0 * * 0"
   workflow_dispatch:
 
 permissions: {}
